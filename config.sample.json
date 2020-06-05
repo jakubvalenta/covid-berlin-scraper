@@ -1,0 +1,51 @@
+{
+  "http": {
+    "timeout": 10,
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101 Firefox/68.0"
+  },
+  "download_feed": {
+    "url": "https://www.berlin.de/sen/gpg/service/presse/2020/index.php/rss"
+  },
+  "download_archive": {
+    "urls": [
+      "https://www.berlin.de/sen/gpg/service/presse/2020/?page_at_1_0=2",
+      "https://www.berlin.de/sen/gpg/service/presse/2020/?page_at_1_0=3",
+      "https://www.berlin.de/sen/gpg/service/presse/2020/?page_at_1_0=4",
+      "https://www.berlin.de/sen/gpg/service/presse/2020/?page_at_1_0=5"
+    ]
+  },
+  "parse_feed": {
+    "default_tz": "Europe/Berlin"
+  },
+  "filter_feed_entries": {
+    "title_regex": "^Coronavirus( in Berlin)?: .+ (Fall|Fälle)"
+  },
+  "parse_page": {
+    "cases_regex": "(?P<cases>(\\d+|Zwei weitere|Erster))\\.? ((bestätigte|positive)r? )?(Fall|Fälle)",
+    "cases_regex_group": "cases",
+    "died_regex": "Zu den [^\\.]+ ein (?P<died>dritter) gekommen|(?P<died>\\w+) (\\S )?(Personen sind )?(bislang )?(an dem|am) neuartigen Coronavirus[^\\.]* verstorben",
+    "died_regex_group": "died",
+    "numbers_map": {
+      "ein": 1,
+      "zwei": 2,
+      "erster": 1,
+      "zwei weitere": 3,
+      "dritter": 3,
+      "vierter": 4,
+      "acht": 8,
+      "neun": 9,
+      "elf": 11
+    },
+    "recovered_map": {
+      "2020-04-03": 1720,
+      "2020-04-04": 1857,
+      "2020-04-05": 1938
+    },
+    "row_index": -1,
+    "expected_first_cell_content": "Summe",
+    "cases_column_index": 1,
+    "recovered_column_index": 3,
+    "thousands_separator": ".",
+    "regex_none": "n\\.a\\."
+  }
+}
