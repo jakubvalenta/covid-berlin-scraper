@@ -203,15 +203,21 @@ def main():
     http_get_kwargs = {
         'timeout': int(config['http']['timeout']),
         'user_agent': config['http']['user_agent'],
-        'cache_dir': cache_dir,
     }
     default_tz = dateutil.tz.gettz(config['parse_feed']['default_tz'])
 
-    feed_text = http_get(config['download_feed']['url'], **http_get_kwargs)
+    feed_text = http_get(
+        config['download_feed']['url'],
+        cache_dir=cache_dir / 'rss',
+        **http_get_kwargs,
+    )
     feed_pages = parse_feed(feed_text, default_tz=default_tz)
     archived_pages = itertools.chain.from_iterable(
         download_and_parse_archive(
-            archive_url, default_tz=default_tz, **http_get_kwargs,
+            archive_url,
+            default_tz=default_tz,
+            cache_dir=cache_dir / 'archive',
+            **http_get_kwargs,
         )
         for archive_url in config['download_archive']['urls']
     )
@@ -247,7 +253,9 @@ def main():
     }
     pages = []
     for meta in pages_filtered:
-        page_html = http_get(meta.url, **http_get_kwargs)
+        page_html = http_get(
+            meta.url, cache_dir=cache_dir / 'pages', **http_get_kwargs
+        )
         try:
             stats = parse_page(
                 page_html, timestamp=meta.timestamp, **parse_page_kwargs
