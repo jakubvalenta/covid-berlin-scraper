@@ -4,9 +4,11 @@
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101 Firefox/68.0"
   },
   "download_feed": {
-    "url": "https://www.berlin.de/sen/gpg/service/presse/2020/index.php/rss"
+    "url": "https://www.berlin.de/sen/gpg/service/presse/2020/index.php/rss",
+    "default_tz": "Europe/Berlin",
+    "title_regex": "^Coronavirus( in Berlin)?: .+ (Fall|Fälle)"
   },
-  "download_archive": {
+  "download_archives": {
     "urls": [
       "https://www.berlin.de/sen/gpg/service/presse/2020/?page_at_1_0=2",
       "https://www.berlin.de/sen/gpg/service/presse/2020/?page_at_1_0=3",
@@ -14,13 +16,7 @@
       "https://www.berlin.de/sen/gpg/service/presse/2020/?page_at_1_0=5"
     ]
   },
-  "parse_feed": {
-    "default_tz": "Europe/Berlin"
-  },
-  "filter_feed_entries": {
-    "title_regex": "^Coronavirus( in Berlin)?: .+ (Fall|Fälle)"
-  },
-  "parse_page": {
+  "parse_press_release": {
     "cases_regex": "(?P<cases>(\\d+|Zwei weitere|Erster))\\.? ((bestätigte|positive)r? )?(Fall|Fälle)",
     "cases_regex_group": "cases",
     "died_regex": "Zu den [^\\.]+ ein (?P<died>dritter) gekommen|(?P<died>\\w+) (\\S )?(Personen sind )?(bislang )?(an dem|am) neuartigen Coronavirus[^\\.]* verstorben",
