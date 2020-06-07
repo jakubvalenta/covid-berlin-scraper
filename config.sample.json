@@ -19,8 +19,8 @@
   "parse_press_release": {
     "cases_regex": "(?P<cases>(\\d+|Zwei weitere|Erster))\\.? ((bestätigte|positive)r? )?(Fall|Fälle)",
     "cases_regex_group": "cases",
-    "died_regex": "Zu den [^\\.]+ ein (?P<died>dritter) gekommen|(?P<died>\\w+) (\\S )?(Personen sind )?(bislang )?(an dem|am) neuartigen Coronavirus[^\\.]* verstorben",
-    "died_regex_group": "died",
+    "deaths_regex": "Zu den [^\\.]+ ein (?P<deaths>dritter) gekommen|(?P<deaths>\\w+) (\\S )?(Personen sind )?(bislang )?(an dem|am) neuartigen Coronavirus[^\\.]* verstorben",
+    "deaths_regex_group": "deaths",
     "numbers_map": {
       "ein": 1,
       "zwei": 2,

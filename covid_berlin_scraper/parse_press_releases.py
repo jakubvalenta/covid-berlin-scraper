@@ -32,7 +32,7 @@ class PressReleaseStats:
     press_release: PressRelease
     cases: int
     recovered: Optional[int]
-    died: Optional[int]
+    deaths: Optional[int]
 
     @property
     def date(self) -> datetime.date:
@@ -56,8 +56,8 @@ def parse_press_release(
     cases_regex: regex.Regex,
     cases_regex_group: str,
     numbers_map: Dict[str, int],
-    died_regex: regex.Regex,
-    died_regex_group: str,
+    deaths_regex: regex.Regex,
+    deaths_regex_group: str,
     row_index: int,
     expected_first_cell_content: str,
     cases_column_index: int,
@@ -104,15 +104,15 @@ def parse_press_release(
         else:
             raise ParseError('Failed to parse case number')
         recovered = recovered_map.get(content.press_release.timestamp.date())
-    died_m = died_regex.search(content.html)
-    died = died_m and parse_int(
-        died_m.group(died_regex_group), numbers_map, thousands_separator
+    deaths_m = deaths_regex.search(content.html)
+    deaths = deaths_m and parse_int(
+        deaths_m.group(deaths_regex_group), numbers_map, thousands_separator
     )
     return PressReleaseStats(
         press_release=content.press_release,
         cases=cases,
         recovered=recovered,
-        died=died,
+        deaths=deaths,
     )
 
 
@@ -132,7 +132,7 @@ def parse_press_releases(
             content.press_release.timestamp.isoformat(),
             stats.cases,
             stats.recovered,
-            stats.died,
+            stats.deaths,
         )
         yield stats
 
@@ -143,13 +143,13 @@ def write_csv(stats_list: Iterable[PressReleaseStats], path: Path):
         stats_by_date_unique[stats.press_release.date] = stats
     with path.open('w') as f:
         writer = csv.writer(f, lineterminator='\n')
-        writer.writerow(('date', 'cases', 'recovered', 'died'))
+        writer.writerow(('date', 'cases', 'recovered', 'deaths'))
         writer.writerows(
             (
                 stats.press_release.date.isoformat(),
                 stats.cases,
                 stats.recovered if stats.recovered is not None else '',
-                stats.died if stats.died is not None else '',
+                stats.deaths if stats.deaths is not None else '',
             )
             for stats in stats_by_date_unique.values()
         )
@@ -172,8 +172,10 @@ def main(cache_path: Path, config: dict, output_path: Path):
             s: int(v)
             for s, v in config['parse_press_release']['numbers_map'].items()
         },
-        died_regex=regex.compile(config['parse_press_release']['died_regex']),
-        died_regex_group=config['parse_press_release']['died_regex_group'],
+        deaths_regex=regex.compile(
+            config['parse_press_release']['deaths_regex']
+        ),
+        deaths_regex_group=config['parse_press_release']['deaths_regex_group'],
         row_index=int(config['parse_press_release']['row_index']),
         expected_first_cell_content=config['parse_press_release'][
             'expected_first_cell_content'
