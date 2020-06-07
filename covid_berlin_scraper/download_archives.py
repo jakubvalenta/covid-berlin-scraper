@@ -1,23 +1,20 @@
-import argparse
 import datetime
-import json
 import logging
-import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable, Iterator
+from typing import Iterable, Iterator, Optional
 from urllib.parse import urlsplit, urlunsplit
 
 import dateutil.tz
 import regex
 from bs4 import BeautifulSoup
 
-from coronavirus_berlin_scraper.download_feed import (
+from covid_berlin_scraper.download_feed import (
     filter_press_releases, save_press_releases,
 )
-from coronavirus_berlin_scraper.model import PressRelease
-from coronavirus_berlin_scraper.utils.http_utils import http_get
-from coronavirus_berlin_scraper.utils.parse_utils import parse_datetime
+from covid_berlin_scraper.model import PressRelease
+from covid_berlin_scraper.utils.http_utils import http_get
+from covid_berlin_scraper.utils.parse_utils import parse_datetime
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +36,7 @@ def download_archives(
 
 
 def parse_archive(
-    archive: Archive, default_tz: datetime.tzinfo
+    archive: Archive, default_tz: Optional[datetime.tzinfo]
 ) -> Iterator[PressRelease]:
     soup = BeautifulSoup(archive.html, 'lxml')
     rows = soup.find(class_='modul-autoteaser').find_all(class_='row-fluid')
@@ -56,33 +53,16 @@ def parse_archive(
 
 
 def parse_archives(
-    archives: Iterable[Archive], default_tz: datetime.tzinfo,
+    archives: Iterable[Archive], default_tz: Optional[datetime.tzinfo],
 ) -> Iterator[PressRelease]:
     for archive in archives:
         yield from parse_archive(archive, default_tz)
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        '-a', '--cache', help='Cache directory path', required=True
-    )
-    parser.add_argument(
-        '-c', '--config', help='Configuration JSON file path', required=True
-    )
-    parser.add_argument(
-        '-v', '--verbose', action='store_true', help='Enable debugging output'
-    )
-    args = parser.parse_args()
-    if args.verbose:
-        logging.basicConfig(
-            stream=sys.stderr, level=logging.INFO, format='%(message)s'
-        )
-    with open(args.config, 'r') as f:
-        config = json.load(f)
+def main(cache_path: Path, config: dict):
     archives = download_archives(
         urls=config['download_archives']['urls'],
-        cache_dir=Path(args.cache) / 'archive',
+        cache_dir=cache_path / 'archive',
         timeout=int(config['http']['timeout']),
         user_agent=config['http']['user_agent'],
     )
@@ -95,9 +75,5 @@ def main():
         title_regex=regex.compile(config['download_feed']['title_regex']),
     )
     save_press_releases(
-        filtered_press_releases, db_path=Path(args.cache) / 'db.sqlite3'
+        filtered_press_releases, db_path=cache_path / 'db.sqlite3'
     )
-
-
-if __name__ == '__main__':
-    main()

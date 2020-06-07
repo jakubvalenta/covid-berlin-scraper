@@ -45,10 +45,10 @@ $ make setup
 ## Usage
 
 ``` shell
-$ ./coronavirus-berlin-scraper
+$ ./covid-berlin-scraper
     --config config.sample.json \
     --cache cache/ \
-    --output coronavirus_berlin_data.csv \
+    --output covid_berlin_data.csv \
     --verbose
 ```
 
@@ -57,7 +57,7 @@ $ ./coronavirus-berlin-scraper
 See all command line options:
 
 ``` shell
-$ ./coronavirus-berlin-scraper --help
+$ ./covid-berlin-scraper --help
 ```
 
 ## Development

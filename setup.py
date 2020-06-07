@@ -2,14 +2,14 @@ from pathlib import Path
 
 from setuptools import find_packages, setup
 
-from coronavirus_berlin_scraper import __title__
+from covid_berlin_scraper import __title__
 
 setup(
-    name='coronavirus-berlin-scraper',
+    name='covid-berlin-scraper',
     version='0.1.0',
     description=__title__,
     long_description=(Path(__file__).parent / 'README.md').read_text(),
-    url='https://www.github.com/jakubvalenta/coronavirus-berlin-scraper',
+    url='https://www.github.com/jakubvalenta/covid-berlin-scraper',
     author='Jakub Valenta',
     author_email='jakub@jakubvalenta.cz',
     license='Apache Software License',
@@ -33,8 +33,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'coronavirus-berlin-scraper='
-            'coronavirus_berlin_scraper.coronavirus_berlin_scraper:main'
+            'covid-berlin-scraper=covid_berlin_scraper.cli:main'
         ]
     },
 )

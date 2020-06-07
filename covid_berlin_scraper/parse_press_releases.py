@@ -1,9 +1,6 @@
-import argparse
 import csv
 import datetime
-import json
 import logging
-import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Iterable, Iterator, Optional
@@ -11,9 +8,9 @@ from typing import Dict, Iterable, Iterator, Optional
 import regex
 from bs4 import BeautifulSoup
 
-from coronavirus_berlin_scraper.model import PressRelease, PressReleasesStore
-from coronavirus_berlin_scraper.utils.http_utils import http_get
-from coronavirus_berlin_scraper.utils.parse_utils import (
+from covid_berlin_scraper.model import PressRelease, PressReleasesStore
+from covid_berlin_scraper.utils.http_utils import http_get
+from covid_berlin_scraper.utils.parse_utils import (
     get_element_text, parse_int, parse_int_or_none,
 )
 
@@ -158,30 +155,10 @@ def write_csv(stats_list: Iterable[PressReleaseStats], path: Path):
         )
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        '-a', '--cache', help='Cache directory path', required=True
-    )
-    parser.add_argument(
-        '-c', '--config', help='Configuration JSON file path', required=True
-    )
-    parser.add_argument(
-        '-o', '--output', help='Output CSV file path', required=True
-    )
-    parser.add_argument(
-        '-v', '--verbose', action='store_true', help='Enable debugging output'
-    )
-    args = parser.parse_args()
-    if args.verbose:
-        logging.basicConfig(
-            stream=sys.stderr, level=logging.INFO, format='%(message)s'
-        )
-    with open(args.config, 'r') as f:
-        config = json.load(f)
+def main(cache_path: Path, config: dict, output_path: Path):
     contents = download_press_releases(
-        db_path=Path(args.cache) / 'db.sqlite3',
-        cache_dir=Path(args.cache) / 'pages',
+        db_path=cache_path / 'db.sqlite3',
+        cache_dir=cache_path / 'pages',
         timeout=int(config['http']['timeout']),
         user_agent=config['http']['user_agent'],
     )
@@ -216,8 +193,4 @@ def main():
         ],
         regex_none=regex.compile(config['parse_press_release']['regex_none']),
     )
-    write_csv(stats_list, Path(args.output))
-
-
-if __name__ == '__main__':
-    main()
+    write_csv(stats_list, output_path)

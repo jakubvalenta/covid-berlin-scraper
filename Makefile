@@ -1,32 +1,4 @@
-_dir := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
-_python_pkg := coronavirus_berlin_scraper
-_executable := coronavirus-berlin-scraper
-
-cache_path ?= $(_dir)/cache
-config_path ?= $(_dir)/config.sample.json
-output_path ?= $(_dir)/coronavirus_data_berlin.csv
-
-.PHONY: download-feed
-download-feed:  ## Download feed
-	"./$(_executable)" python -m "$(_python_pkg).download_feed" \
-		--cache "$(cache_path)" \
-		--config "$(config_path)" \
-		--verbose
-
-.PHONY: download-archives
-download-archives:  ## Download archives
-	"./$(_executable)" python -m "$(_python_pkg).download_archives" \
-		--cache "$(cache_path)" \
-		--config "$(config_path)" \
-		--verbose
-
-.PHONY: parse-press-releases
-parse-press-releases:  ## Parse press releases
-	"./$(_executable)" python -m "$(_python_pkg).parse_press_releases" \
-		--cache "$(cache_path)" \
-		--config "$(config_path)" \
-		--output "$(output_path)" \
-		--verbose
+_python_pkg := covid_berlin_scraper
 
 .PHONY: setup
 setup:  ## Create Pipenv virtual environment and install dependencies.

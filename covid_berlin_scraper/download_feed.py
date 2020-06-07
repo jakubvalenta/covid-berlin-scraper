@@ -1,24 +1,21 @@
-import argparse
 import datetime
-import json
 import logging
-import sys
 from pathlib import Path
-from typing import Iterable, Iterator
+from typing import Iterable, Iterator, Optional
 
 import dateutil.tz
 import feedparser
 import regex
 
-from coronavirus_berlin_scraper.model import PressRelease, PressReleasesStore
-from coronavirus_berlin_scraper.utils.http_utils import http_get
-from coronavirus_berlin_scraper.utils.parse_utils import parse_datetime
+from covid_berlin_scraper.model import PressRelease, PressReleasesStore
+from covid_berlin_scraper.utils.http_utils import http_get
+from covid_berlin_scraper.utils.parse_utils import parse_datetime
 
 logger = logging.getLogger(__name__)
 
 
 def download_feed(
-    url: str, default_tz: datetime.tzinfo, **http_kwargs,
+    url: str, default_tz: Optional[datetime.tzinfo], **http_kwargs,
 ) -> Iterator[PressRelease]:
     feed_text = http_get(url, **http_kwargs)
     feed = feedparser.parse(feed_text)
@@ -46,24 +43,7 @@ def save_press_releases(press_releases: Iterable[PressRelease], db_path: Path):
         press_releases_store.append(press_release)
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        '-a', '--cache', help='Cache directory path', required=True
-    )
-    parser.add_argument(
-        '-c', '--config', help='Configuration JSON file path', required=True
-    )
-    parser.add_argument(
-        '-v', '--verbose', action='store_true', help='Enable debugging output'
-    )
-    args = parser.parse_args()
-    if args.verbose:
-        logging.basicConfig(
-            stream=sys.stderr, level=logging.INFO, format='%(message)s'
-        )
-    with open(args.config, 'r') as f:
-        config = json.load(f)
+def main(cache_path: Path, config: dict):
     press_releases = download_feed(
         url=config['download_feed']['url'],
         default_tz=dateutil.tz.gettz(config['download_feed']['default_tz']),
@@ -75,9 +55,5 @@ def main():
         title_regex=regex.compile(config['download_feed']['title_regex']),
     )
     save_press_releases(
-        filtered_press_releases, db_path=Path(args.cache) / 'db.sqlite3'
+        filtered_press_releases, db_path=cache_path / 'db.sqlite3'
     )
-
-
-if __name__ == '__main__':
-    main()
