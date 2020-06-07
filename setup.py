@@ -30,6 +30,7 @@ setup(
         'lxml',
         'regex',
         'requests',
+        'sqlalchemy',
     ],
     entry_points={
         'console_scripts': [
