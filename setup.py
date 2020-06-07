@@ -6,7 +6,7 @@ from covid_berlin_scraper import __title__
 
 setup(
     name='covid-berlin-scraper',
-    version='0.1.0',
+    version='0.2.0',
     description=__title__,
     long_description=(Path(__file__).parent / 'README.md').read_text(),
     url='https://www.github.com/jakubvalenta/covid-berlin-scraper',
@@ -15,7 +15,7 @@ setup(
     license='Apache Software License',
     classifiers=[
         'Development Status :: 3 - Alpha',
-        'Intended Audience :: End Users/Desktop',
+        'Intended Audience :: Science/Research',
         'Topic :: Utilities',
         'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python :: 3',
