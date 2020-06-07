@@ -28,6 +28,7 @@ setup(
         'dateparser',
         'feedparser',
         'lxml',
+        'python-dateutil',
         'regex',
         'requests',
         'sqlalchemy',
