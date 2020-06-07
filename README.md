@@ -1,16 +1,12 @@
-# Coronavirus Berlin Scraper
+# Scraper for Covid-19 Data in Berlin
 
-Download data about the spread of SARS-CoV-2/Covid-19 from the official daily
-press releases of the city of Berlin ([Pressemitteilungen der Senatsverwaltung
-für Gesundheit, Pflege und
-Gleichstellung](https://www.berlin.de/sen/gpg/service/presse/2020/)).
+This program downloads data on the number of coronavirus cases, recovered cases
+and deaths in Berlin, Germany from the official press releases of the city of
+Berlin: [Pressemitteilungen der Senatsverwaltung für Gesundheit, Pflege und
+Gleichstellung](https://www.berlin.de/sen/gpg/service/presse/2020/).
 
-The data includes:
-
-- date and time of the press release
-- total number of cases
-- total number of recovered cases
-- total number of people who died
+See [covid-berlin-data](https://www.github.com/jakubvalenta/covid-berlin-data)
+for the data itself (updated daily).
 
 ## Installation
 
@@ -44,13 +40,28 @@ $ make setup
 
 ## Usage
 
-``` shell
-$ ./covid-berlin-scraper
-    --config config.sample.json \
-    --cache cache/ \
-    --output covid_berlin_data.csv \
-    --verbose
-```
+This program works in three steps:
+
+1. Download press releases from the current RSS feed and save their metadata in
+   a database in the passed cache directory:
+
+    ``` shell
+    $ ./covid-berlin-scraper --cache my_cache_dir --verbose download-feed
+    ```
+
+2. Download press releases from the press release archive and save their
+   metadata in the same database:
+
+    ``` shell
+    $ ./covid-berlin-scraper --cache my_cache_dir --verbose download-archives
+    ```
+
+3. Download and parse the content of all press releases stored in the database
+   and generate a CSV output:
+
+    ``` shell
+    $ ./covid-berlin-scraper --cache my_cache_dir --verbose parse-press-releases -o my_output.csv
+    ```
 
 ## Help
 
