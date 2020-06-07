@@ -51,13 +51,13 @@ def main():
         'download-archives', help='Download archives'
     )
     download_archives_parser.set_defaults(func=download_archives)
-    parse_press_release_parser = subparsers.add_parser(
-        'parse-press-release', help='Parse press releases'
+    parse_press_releases_parser = subparsers.add_parser(
+        'parse-press-releases', help='Parse press releases'
     )
-    parse_press_release_parser.add_argument(
+    parse_press_releases_parser.add_argument(
         '-o', '--output', help='Output CSV file path', required=True
     )
-    parse_press_release_parser.set_defaults(func=parse_press_releases)
+    parse_press_releases_parser.set_defaults(func=parse_press_releases)
     args = parser.parse_args()
     if args.verbose:
         logging.basicConfig(
