@@ -40,7 +40,7 @@ def main():
         '-c',
         '--config',
         help='Configuration JSON file path',
-        default=str(Path(__file__).parents[1] / 'config.sample.json'),
+        default=str(Path(__file__).parent / 'config.sample.json'),
     )
     subparsers = parser.add_subparsers()
     download_feed_parser = subparsers.add_parser(
