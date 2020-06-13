@@ -21,6 +21,10 @@
     "cases_regex_group": "cases",
     "deaths_regex": "Zu den [^\\.]+ ein (?P<deaths>dritter) gekommen|(?P<deaths>\\w+) (\\S )?(Personen sind )?(bislang )?(an dem|am) neuartigen Coronavirus[^\\.]* verstorben",
     "deaths_regex_group": "deaths",
+    "hospitalized_regex": "Krankenhaus isoliert und behandelt werden (?P<hospitalized>\\d+)",
+    "hospitalized_regex_group": "hospitalized",
+    "icu_regex": "(?P<icu>\\d+) intensivmedizinisch behandelt",
+    "icu_regex_group": "icu",
     "numbers_map": {
       "ein": 1,
       "zwei": 2,

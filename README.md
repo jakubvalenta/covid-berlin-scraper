@@ -60,7 +60,9 @@ This program works in three steps:
    and generate a CSV output:
 
     ``` shell
-    $ ./covid-berlin-scraper --cache my_cache_dir --verbose parse-press-releases -o my_output.csv
+    $ ./covid-berlin-scraper --cache my_cache_dir --verbose parse-press-releases \
+        -o my_output.csv \
+        --output-hosp my_output_incl_hospitalized.csv
     ```
 
 ## Help

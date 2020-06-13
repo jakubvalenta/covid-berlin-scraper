@@ -25,7 +25,8 @@ def parse_press_releases(cache_path, config, args):
     from covid_berlin_scraper.parse_press_releases import main
 
     output_path = Path(args.output)
-    main(cache_path, config, output_path)
+    output_hosp_path = Path(args.output_hosp) if args.output_hosp else None
+    main(cache_path, config, output_path, output_hosp_path)
 
 
 def main():
@@ -55,7 +56,17 @@ def main():
         'parse-press-releases', help='Parse press releases'
     )
     parse_press_releases_parser.add_argument(
-        '-o', '--output', help='Output CSV file path', required=True
+        '-o',
+        '--output',
+        help='Output CSV file path; columns: date, cases, recovered, deaths',
+        required=True,
+    )
+    parse_press_releases_parser.add_argument(
+        '--output-hosp',
+        help=(
+            'Output CSV file path; columns: '
+            'date, cases, recovered, deaths, hospitalized, icu'
+        ),
     )
     parse_press_releases_parser.set_defaults(func=parse_press_releases)
     args = parser.parse_args()
