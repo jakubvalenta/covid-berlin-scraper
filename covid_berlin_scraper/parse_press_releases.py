@@ -91,7 +91,7 @@ def parse_press_release(
     expected_first_cell_content: str,
     cases_column_index: int,
     recovered_column_index: int,
-    recovered_map: Dict[datetime.date, int],
+    recovered_map: Dict[str, int],
     thousands_separator: str,
     regex_none: regex.Regex,
 ) -> PressReleaseStats:
@@ -119,9 +119,7 @@ def parse_press_release(
                 thousands_separator,
             )
         else:
-            recovered = recovered_map.get(
-                content.press_release.timestamp.date()
-            )
+            recovered = recovered_map.get(content.press_release.url)
     else:
         cases_m = cases_regex.search(content.html)
         if cases_m:
@@ -132,7 +130,7 @@ def parse_press_release(
             )
         else:
             raise ParseError('Failed to parse case number')
-        recovered = recovered_map.get(content.press_release.timestamp.date())
+        recovered = recovered_map.get(content.press_release.url)
     deaths_m = deaths_regex.search(content.html)
     deaths = deaths_m and parse_int(
         deaths_m.group(deaths_regex_group), numbers_map, thousands_separator
@@ -243,7 +241,7 @@ def main(
                 config['parse_press_release']['recovered_column_index']
             ),
             recovered_map={
-                datetime.date.fromisoformat(s): int(v)
+                str(s): int(v)
                 for s, v in config['parse_press_release'][
                     'recovered_map'
                 ].items()
