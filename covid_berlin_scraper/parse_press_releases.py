@@ -85,6 +85,7 @@ def parse_press_release(
     deaths_regex_group: str,
     hospitalized_regex: regex.Regex,
     hospitalized_regex_group: str,
+    hospitalized_map: Dict[str, Optional[int]],
     icu_regex: regex.Regex,
     icu_regex_group: str,
     row_index: int,
@@ -141,6 +142,8 @@ def parse_press_release(
         numbers_map,
         thousands_separator,
     )
+    if hospitalized is None:
+        hospitalized = hospitalized_map.get(content.press_release.url)
     icu_m = icu_regex.search(content.html)
     icu = icu_m and parse_int(
         icu_m.group(icu_regex_group), numbers_map, thousands_separator
@@ -226,6 +229,12 @@ def main(
             hospitalized_regex_group=config['parse_press_release'][
                 'hospitalized_regex_group'
             ],
+            hospitalized_map={
+                str(s): int(v) if v is not None else None
+                for s, v in config['parse_press_release'][
+                    'hospitalized_map'
+                ].items()
+            },
             icu_regex=regex.compile(
                 config['parse_press_release']['icu_regex']
             ),

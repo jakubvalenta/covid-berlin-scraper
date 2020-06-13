@@ -23,6 +23,17 @@
     "deaths_regex_group": "deaths",
     "hospitalized_regex": "Krankenhaus isoliert und behandelt werden (?P<hospitalized>\\d+)",
     "hospitalized_regex_group": "hospitalized",
+    "hospitalized_map": {
+      "https://www.berlin.de/sen/gpg/service/presse/2020/pressemitteilung.901388.php": 1,
+      "https://www.berlin.de/sen/gpg/service/presse/2020/pressemitteilung.901873.php": 2,
+      "https://www.berlin.de/sen/gpg/service/presse/2020/pressemitteilung.902522.php": 4,
+      "https://www.berlin.de/sen/gpg/service/presse/2020/pressemitteilung.903044.php": 4,
+      "https://www.berlin.de/sen/gpg/service/presse/2020/pressemitteilung.903098.php": 4,
+      "https://www.berlin.de/sen/gpg/service/presse/2020/pressemitteilung.904097.php": 4,
+      "https://www.berlin.de/sen/gpg/service/presse/2020/pressemitteilung.904142.php": null,
+      "https://www.berlin.de/sen/gpg/service/presse/2020/pressemitteilung.904147.php": null,
+      "https://www.berlin.de/sen/gpg/service/presse/2020/pressemitteilung.904264.php": null
+    },
     "icu_regex": "(?P<icu>\\d+) intensivmedizinisch behandelt",
     "icu_regex_group": "icu",
     "numbers_map": {
