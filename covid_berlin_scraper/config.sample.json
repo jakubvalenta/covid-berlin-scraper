@@ -10,10 +10,14 @@
   },
   "download_archives": {
     "urls": [
+      "https://www.berlin.de/sen/gpg/service/presse/2020/?page_at_1_0=1",
       "https://www.berlin.de/sen/gpg/service/presse/2020/?page_at_1_0=2",
       "https://www.berlin.de/sen/gpg/service/presse/2020/?page_at_1_0=3",
       "https://www.berlin.de/sen/gpg/service/presse/2020/?page_at_1_0=4",
-      "https://www.berlin.de/sen/gpg/service/presse/2020/?page_at_1_0=5"
+      "https://www.berlin.de/sen/gpg/service/presse/2020/?page_at_1_0=5",
+      "https://www.berlin.de/sen/gpg/service/presse/2020/?page_at_1_0=6",
+      "https://www.berlin.de/sen/gpg/service/presse/2020/?page_at_1_0=7",
+      "https://www.berlin.de/sen/gpg/service/presse/2020/?page_at_1_0=8"
     ]
   },
   "parse_press_release": {
@@ -50,7 +54,8 @@
     "recovered_map": {
       "https://www.berlin.de/sen/gpg/service/presse/2020/pressemitteilung.916085.php": 1720,
       "https://www.berlin.de/sen/gpg/service/presse/2020/pressemitteilung.916248.php": 1857,
-      "https://www.berlin.de/sen/gpg/service/presse/2020/pressemitteilung.916463.php": 1938
+      "https://www.berlin.de/sen/gpg/service/presse/2020/pressemitteilung.916463.php": 1938,
+      "https://www.berlin.de/sen/gpg/service/presse/2020/pressemitteilung.955342.php": 7515
     },
     "row_index": -1,
     "expected_first_cell_content": "Summe",
