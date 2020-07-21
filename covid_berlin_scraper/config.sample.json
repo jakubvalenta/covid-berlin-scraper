@@ -58,7 +58,7 @@
       "https://www.berlin.de/sen/gpg/service/presse/2020/pressemitteilung.955342.php": 7515
     },
     "row_index": -1,
-    "expected_first_cell_content": "Summe",
+    "first_cell_regex": "Summe|Berlin",
     "cases_column_index": 1,
     "recovered_column_index": 3,
     "thousands_separator": ".",

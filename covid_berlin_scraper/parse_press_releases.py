@@ -89,7 +89,7 @@ def parse_press_release(
     icu_regex: regex.Regex,
     icu_regex_group: str,
     row_index: int,
-    expected_first_cell_content: str,
+    first_cell_regex: regex.Regex,
     cases_column_index: int,
     recovered_column_index: int,
     recovered_map: Dict[str, int],
@@ -101,10 +101,10 @@ def parse_press_release(
     if table:
         last_tr = table.find_all('tr')[-1]
         tds = last_tr.find_all('td')
-        if get_element_text(tds[0]) != expected_first_cell_content:
+        if not regex.match(first_cell_regex, get_element_text(tds[0])):
             raise Exception(
-                'Expected the first cell content to be "{}"'.format(
-                    expected_first_cell_content
+                'Expected the first cell content to be match "{}"'.format(
+                    first_cell_regex
                 )
             )
         cases = parse_int(
@@ -240,9 +240,9 @@ def main(
             ),
             icu_regex_group=config['parse_press_release']['icu_regex_group'],
             row_index=int(config['parse_press_release']['row_index']),
-            expected_first_cell_content=config['parse_press_release'][
-                'expected_first_cell_content'
-            ],
+            first_cell_regex=regex.compile(
+                config['parse_press_release']['first_cell_regex']
+            ),
             cases_column_index=int(
                 config['parse_press_release']['cases_column_index']
             ),
