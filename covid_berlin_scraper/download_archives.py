@@ -2,7 +2,7 @@ import datetime
 import logging
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable, Iterator, Optional
+from typing import Iterable, Iterator
 from urllib.parse import urlsplit, urlunsplit
 
 import dateutil.tz
@@ -26,7 +26,8 @@ class Archive:
 
 
 def download_archives(
-    urls: Iterable[str], **http_kwargs,
+    urls: Iterable[str],
+    **http_kwargs,
 ) -> Iterator[Archive]:
     for url in urls:
         html = http_get(url, **http_kwargs)
@@ -36,7 +37,7 @@ def download_archives(
 
 
 def parse_archive(
-    archive: Archive, default_tz: Optional[datetime.tzinfo]
+    archive: Archive, default_tz: datetime.tzinfo
 ) -> Iterator[PressRelease]:
     soup = BeautifulSoup(archive.html, 'lxml')
     rows = soup.find(class_='modul-autoteaser').find_all(class_='row-fluid')
@@ -53,7 +54,8 @@ def parse_archive(
 
 
 def parse_archives(
-    archives: Iterable[Archive], default_tz: Optional[datetime.tzinfo],
+    archives: Iterable[Archive],
+    default_tz: datetime.tzinfo,
 ) -> Iterator[PressRelease]:
     for archive in archives:
         yield from parse_archive(archive, default_tz)
@@ -66,9 +68,12 @@ def main(cache_path: Path, config: dict):
         timeout=int(config['http']['timeout']),
         user_agent=config['http']['user_agent'],
     )
+    default_tz = dateutil.tz.gettz(config['download_feed']['default_tz'])
+    if not default_tz:
+        raise Exception('Invalid time zone')
     press_releases = parse_archives(
         archives,
-        default_tz=dateutil.tz.gettz(config['download_feed']['default_tz']),
+        default_tz=default_tz,
     )
     filtered_press_releases = filter_press_releases(
         press_releases,

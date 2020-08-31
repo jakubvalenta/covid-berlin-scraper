@@ -1,7 +1,7 @@
 import datetime
 import logging
 from pathlib import Path
-from typing import Iterable, Iterator, Optional
+from typing import Iterable, Iterator
 
 import dateutil.tz
 import feedparser
@@ -15,7 +15,9 @@ logger = logging.getLogger(__name__)
 
 
 def download_feed(
-    url: str, default_tz: Optional[datetime.tzinfo], **http_kwargs,
+    url: str,
+    default_tz: datetime.tzinfo,
+    **http_kwargs,
 ) -> Iterator[PressRelease]:
     feed_text = http_get(url, **http_kwargs)
     feed = feedparser.parse(feed_text)
@@ -44,9 +46,12 @@ def save_press_releases(press_releases: Iterable[PressRelease], db_path: Path):
 
 
 def main(cache_path: Path, config: dict):
+    default_tz = dateutil.tz.gettz(config['download_feed']['default_tz'])
+    if not default_tz:
+        raise Exception('Invalid time zone')
     press_releases = download_feed(
         url=config['download_feed']['url'],
-        default_tz=dateutil.tz.gettz(config['download_feed']['default_tz']),
+        default_tz=default_tz,
         timeout=int(config['http']['timeout']),
         user_agent=config['http']['user_agent'],
     )
