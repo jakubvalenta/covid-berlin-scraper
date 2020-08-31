@@ -17,7 +17,7 @@ test:  ## Run unit tests
 lint:  ## Run linting
 	pipenv run flake8 $(_python_pkg)
 	pipenv run mypy $(_python_pkg) --ignore-missing-imports
-	pipenv run isort -c -rc $(_python_pkg)
+	pipenv run isort -c $(_python_pkg)
 
 .PHONY: tox
 tox:  ## Test with tox
@@ -26,7 +26,7 @@ tox:  ## Test with tox
 .PHONY: reformat
 reformat:  ## Reformat Python code using Black
 	black -l 79 --skip-string-normalization $(_python_pkg)
-	pipenv run isort -rc $(_python_pkg)
+	pipenv run isort $(_python_pkg)
 
 .PHONY: python-shell
 python-shell:  ## Run Python shell with all dependencies installed
