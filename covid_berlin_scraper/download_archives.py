@@ -64,7 +64,6 @@ def parse_archives(
 def main(cache_path: Path, config: dict):
     archives = download_archives(
         urls=config['download_archives']['urls'],
-        cache_dir=cache_path / 'archive',
         timeout=int(config['http']['timeout']),
         user_agent=config['http']['user_agent'],
     )
