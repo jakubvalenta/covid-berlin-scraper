@@ -16,7 +16,10 @@ def safe_filename(s: str, max_length: int = 64) -> str:
 
 
 def http_get(
-    url: str, timeout: int, user_agent: int, cache_dir: Optional[Path] = None,
+    url: str,
+    timeout: int,
+    user_agent: str,
+    cache_dir: Optional[Path] = None,
 ):
     if cache_dir:
         cache_file_path = cache_dir / safe_filename(url)
