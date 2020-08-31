@@ -1,4 +1,3 @@
-import datetime
 import logging
 from pathlib import Path
 
@@ -20,13 +19,6 @@ class PressRelease(Base):  # type: ignore
     timestamp = Column(DateTime, nullable=False, unique=True)
     title = Column(String, nullable=False)
     url = Column(String, nullable=False, unique=True)
-
-    @property
-    def date(self) -> datetime.date:
-        date = self.timestamp.date()
-        if self.timestamp.hour < 12:
-            return date - datetime.timedelta(days=1)
-        return date
 
     def matches_title_regex(self, title_regex: regex.Regex) -> bool:
         return bool(title_regex.search(self.title))

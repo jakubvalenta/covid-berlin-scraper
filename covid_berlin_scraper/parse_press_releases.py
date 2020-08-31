@@ -35,7 +35,7 @@ class PressReleaseContent:
 
 @dataclass
 class PressReleaseStats:
-    press_release: PressRelease
+    timestamp: datetime.datetime
     cases: int
     recovered: Optional[int]
     deaths: Optional[int]
@@ -44,8 +44,8 @@ class PressReleaseStats:
 
     @property
     def date(self) -> datetime.date:
-        date = self.press_release.timestamp.date()
-        if self.press_release.timestamp.hour < 12:
+        date = self.timestamp.date()
+        if self.timestamp.hour < 12:
             return date - datetime.timedelta(days=1)
         return date
 
@@ -57,7 +57,7 @@ class PressReleaseStats:
     def __repr__(self) -> str:
         return ','.join(
             [
-                self.press_release.timestamp.isoformat(),
+                self.timestamp.isoformat(),
                 ensure_str(self.cases),
                 ensure_str(self.recovered),
                 ensure_str(self.deaths),
@@ -149,7 +149,7 @@ def parse_press_release(
         icu_m.group(icu_regex_group), numbers_map, thousands_separator
     )
     return PressReleaseStats(
-        press_release=content.press_release,
+        timestamp=content.press_release.timestamp,
         cases=cases,
         recovered=recovered,
         deaths=deaths,
@@ -166,7 +166,8 @@ def parse_press_releases(
             stats = parse_press_release(content, **parse_press_release_kwargs)
         except ParseError:
             logger.error(
-                'Failed to parse %s', content.press_release.title,
+                'Failed to parse %s',
+                content.press_release.title,
             )
             continue
         logger.info(stats)
@@ -180,7 +181,7 @@ def write_csv(
 ):
     stats_by_date_unique = {}
     for stats in stats_list:
-        stats_by_date_unique[stats.press_release.date] = stats
+        stats_by_date_unique[stats.date] = stats
     with path.open('w') as f:
         writer = csv.writer(f, lineterminator='\n')
         writer.writerow(fields.keys())
