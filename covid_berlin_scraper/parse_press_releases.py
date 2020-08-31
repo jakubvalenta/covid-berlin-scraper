@@ -8,7 +8,9 @@ from typing import Any, Callable, Dict, Iterable, Iterator, Optional
 import regex
 from bs4 import BeautifulSoup
 
-from covid_berlin_scraper.model import PressRelease, PressReleasesStore
+from covid_berlin_scraper.model import (
+    DistrictTable, DistrictTableStore, PressRelease, PressReleasesStore,
+)
 from covid_berlin_scraper.utils.http_utils import http_get
 from covid_berlin_scraper.utils.parse_utils import (
     get_element_text, parse_int, parse_int_or_none,
@@ -174,6 +176,49 @@ def parse_press_releases(
         yield stats
 
 
+def parse_district_table(
+    district_table: DistrictTable,
+    column_district: str,
+    column_cases: str,
+    column_recovered: str,
+    row_sum: str,
+    delimiter: str,
+) -> PressReleaseStats:
+    reader = csv.DictReader(
+        district_table.content.splitlines(),
+        delimiter=delimiter,
+    )
+    for row in reader:
+        if row[column_district] == row_sum:
+            cases = int(row[column_cases])
+            recovered = int(row[column_recovered])
+            return PressReleaseStats(
+                timestamp=district_table.timestamp,
+                cases=cases,
+                recovered=recovered,
+                deaths=None,
+                hospitalized=None,
+                icu=None,
+            )
+    raise ParseError('Sum row not found')
+
+
+def parse_district_tables(
+    db_path: Path, **parse_district_table_kwargs
+) -> Iterator[PressReleaseStats]:
+    district_table_store = DistrictTableStore(db_path)
+    for district_table in district_table_store:
+        try:
+            stats = parse_district_table(
+                district_table, **parse_district_table_kwargs
+            )
+        except ParseError:
+            logger.error('Failed to parse %s', district_table)
+            continue
+        logger.info(stats)
+        yield stats
+
+
 def write_csv(
     stats_list: Iterable[PressReleaseStats],
     path: Path,
@@ -203,7 +248,7 @@ def main(
         timeout=int(config['http']['timeout']),
         user_agent=config['http']['user_agent'],
     )
-    stats_list = list(
+    stats_list_press_releases = list(
         parse_press_releases(
             contents,
             cases_regex=regex.compile(
@@ -264,6 +309,19 @@ def main(
             ),
         )
     )
+    stats_list_district_tables = list(
+        parse_district_tables(
+            db_path=cache_path / 'db.sqlite3',
+            column_district=config['parse_district_table']['column_district'],
+            column_cases=config['parse_district_table']['column_cases'],
+            column_recovered=config['parse_district_table'][
+                'column_recovered'
+            ],
+            row_sum=config['parse_district_table']['row_sum'],
+            delimiter=config['parse_district_table']['delimiter'],
+        )
+    )
+    stats_list = stats_list_press_releases + stats_list_district_tables
     write_csv(
         stats_list,
         output_path,

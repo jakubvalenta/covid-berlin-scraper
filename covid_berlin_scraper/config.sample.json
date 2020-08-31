@@ -3,6 +3,9 @@
     "timeout": 10,
     "user_agent": "Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101 Firefox/68.0"
   },
+  "download_district_table": {
+    "url": "https://www.berlin.de/lageso/_assets/gesundheit/publikationen/corona/bezirkstabelle.csv"
+  },
   "download_feed": {
     "url": "https://www.berlin.de/sen/gpg/service/presse/2020/index.php/rss",
     "default_tz": "Europe/Berlin",
@@ -66,5 +69,12 @@
     "recovered_column_index": 3,
     "thousands_separator": ".",
     "regex_none": "n\\.a\\."
+  },
+  "parse_district_table": {
+    "column_district": "Bezirk",
+    "column_cases": "Fallzahl",
+    "column_recovered": "Genesen",
+    "row_sum": "Berlin",
+    "delimiter": ";"
   }
 }

@@ -64,3 +64,43 @@ class PressReleasesStore(list):
             logger.info('Adding new press release %s', press_release)
             self._session.add(press_release)
         self._session.commit()
+
+
+class DistrictTable(Base):  # type: ignore
+    __tablename__ = 'district_table'
+
+    id = Column(Integer, primary_key=True)
+    timestamp = Column(DateTime, nullable=False, unique=True)
+    content = Column(String, nullable=False)
+
+    def __repr__(self) -> str:
+        return (
+            f'DistrictTable(timestamp={self.timestamp.isoformat()}, '
+            f'content={self.content})'
+        )
+
+
+class DistrictTableStore(list):
+    _session: Session
+
+    def __init__(self, path: Path):
+        self._session = create_session(path)
+        query = self._session.query(DistrictTable).order_by(
+            DistrictTable.timestamp
+        )
+        for csv in query:
+            super().append(csv)
+
+    def append(self, district_table: DistrictTable):
+        existing_csv = (
+            self._session.query(DistrictTable)
+            .filter(DistrictTable.timestamp == district_table.timestamp)
+            .first()
+        )
+        if existing_csv:
+            logger.info('Updating existing district table %s', district_table)
+            district_table.content = district_table.content
+        else:
+            logger.info('Adding new district table %s', district_table)
+            self._session.add(district_table)
+        self._session.commit()

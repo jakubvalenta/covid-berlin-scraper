@@ -15,6 +15,12 @@ def download_feed(cache_path, config, args):
     main(cache_path, config)
 
 
+def download_district_table(cache_path, config, args):
+    from covid_berlin_scraper.download_district_table import main
+
+    main(cache_path, config)
+
+
 def download_archives(cache_path, config, args):
     from covid_berlin_scraper.download_archives import main
 
@@ -48,6 +54,10 @@ def main():
         'download-feed', help='Download feed'
     )
     download_feed_parser.set_defaults(func=download_feed)
+    download_district_table_parser = subparsers.add_parser(
+        'download-district-table', help='Download district table'
+    )
+    download_district_table_parser.set_defaults(func=download_district_table)
     download_archives_parser = subparsers.add_parser(
         'download-archives', help='Download archives'
     )
