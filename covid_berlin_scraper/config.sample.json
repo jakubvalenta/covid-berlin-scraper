@@ -75,6 +75,12 @@
     "column_cases": "Fallzahl",
     "column_recovered": "Genesen",
     "row_sum": "Berlin",
-    "delimiter": ";"
+    "delimiter": ";",
+    "deaths_map": {
+      "2020-08-30": 226,
+      "2020-08-31": 226,
+      "2020-09-01": 226,
+      "2020-09-02": 226
+    }
   }
 }

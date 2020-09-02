@@ -183,6 +183,7 @@ def parse_district_table(
     column_recovered: str,
     row_sum: str,
     delimiter: str,
+    deaths_map: Dict[datetime.date, int],
 ) -> PressReleaseStats:
     reader = csv.DictReader(
         district_table.content.splitlines(),
@@ -192,11 +193,12 @@ def parse_district_table(
         if row[column_district] == row_sum:
             cases = int(row[column_cases])
             recovered = int(row[column_recovered])
+            deaths = deaths_map.get(district_table.timestamp.date())
             return PressReleaseStats(
                 timestamp=district_table.timestamp,
                 cases=cases,
                 recovered=recovered,
-                deaths=None,
+                deaths=deaths,
                 hospitalized=None,
                 icu=None,
             )
@@ -319,6 +321,12 @@ def main(
             ],
             row_sum=config['parse_district_table']['row_sum'],
             delimiter=config['parse_district_table']['delimiter'],
+            deaths_map={
+                datetime.date.fromisoformat(k): int(v)
+                for k, v in config['parse_district_table'][
+                    'deaths_map'
+                ].items()
+            },
         )
     )
     stats_list = stats_list_press_releases + stats_list_district_tables
