@@ -48,6 +48,12 @@ class PressReleaseStats:
     @property
     def date(self) -> datetime.date:
         date = self.timestamp.date()
+        if (
+            self.timestamp.hour == 0
+            and self.timestamp.minute == 0
+            and self.timestamp.second == 0
+        ):
+            return date
         if self.timestamp.hour < 12:
             return date - datetime.timedelta(days=1)
         return date
