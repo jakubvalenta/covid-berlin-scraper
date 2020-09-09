@@ -21,6 +21,12 @@ def download_district_table(cache_path, config, args):
     main(cache_path, config)
 
 
+def download_dashboard(cache_path, config, args):
+    from covid_berlin_scraper.download_dashboard import main
+
+    main(cache_path, config)
+
+
 def download_archives(cache_path, config, args):
     from covid_berlin_scraper.download_archives import main
 
@@ -58,6 +64,10 @@ def main():
         'download-district-table', help='Download district table'
     )
     download_district_table_parser.set_defaults(func=download_district_table)
+    download_dashboard_parser = subparsers.add_parser(
+        'download-dashboard', help='Download dashboard'
+    )
+    download_dashboard_parser.set_defaults(func=download_dashboard)
     download_archives_parser = subparsers.add_parser(
         'download-archives', help='Download archives'
     )

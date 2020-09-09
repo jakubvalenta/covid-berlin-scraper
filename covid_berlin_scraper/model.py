@@ -88,19 +88,57 @@ class DistrictTableStore(list):
         query = self._session.query(DistrictTable).order_by(
             DistrictTable.timestamp
         )
-        for csv in query:
-            super().append(csv)
+        for district_table in query:
+            super().append(district_table)
 
     def append(self, district_table: DistrictTable):
-        existing_csv = (
+        existing_district_table = (
             self._session.query(DistrictTable)
             .filter(DistrictTable.timestamp == district_table.timestamp)
             .first()
         )
-        if existing_csv:
+        if existing_district_table:
             logger.info('Updating existing district table %s', district_table)
             district_table.content = district_table.content
         else:
             logger.info('Adding new district table %s', district_table)
             self._session.add(district_table)
+        self._session.commit()
+
+
+class Dashboard(Base):  # type: ignore
+    __tablename__ = 'dashboard'
+
+    id = Column(Integer, primary_key=True)
+    timestamp = Column(DateTime, nullable=False, unique=True)
+    content = Column(String, nullable=False)
+
+    def __repr__(self) -> str:
+        return (
+            f'Dashboard(timestamp={self.timestamp.isoformat()}, '
+            f'content_length={len(self.content)})'
+        )
+
+
+class DashboardStore(list):
+    _session: Session
+
+    def __init__(self, path: Path):
+        self._session = create_session(path)
+        query = self._session.query(Dashboard).order_by(Dashboard.timestamp)
+        for dashboard in query:
+            super().append(dashboard)
+
+    def append(self, dashboard: Dashboard):
+        existing_dashboard = (
+            self._session.query(Dashboard)
+            .filter(Dashboard.timestamp == dashboard.timestamp)
+            .first()
+        )
+        if existing_dashboard:
+            logger.info('Updating existing dashboard %s', dashboard)
+            dashboard.content = dashboard.content
+        else:
+            logger.info('Adding new dashboard %s', dashboard)
+            self._session.add(dashboard)
         self._session.commit()

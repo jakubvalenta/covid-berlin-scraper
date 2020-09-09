@@ -6,6 +6,9 @@
   "download_district_table": {
     "url": "https://www.berlin.de/lageso/_assets/gesundheit/publikationen/corona/bezirkstabelle.csv"
   },
+  "download_dashboard": {
+    "url": "https://www.berlin.de/corona/lagebericht/desktop/corona.html"
+  },
   "download_feed": {
     "url": "https://www.berlin.de/sen/gpg/service/presse/2020/index.php/rss",
     "default_tz": "Europe/Berlin",
@@ -80,7 +83,21 @@
       "2020-08-30": 226,
       "2020-08-31": 226,
       "2020-09-01": 226,
-      "2020-09-02": 226
+      "2020-09-02": 226,
+      "2020-09-03": 226,
+      "2020-09-04": 226,
+      "2020-09-05": 226,
+      "2020-09-06": 226,
+      "2020-09-07": 226,
+      "2020-09-08": 226
     }
+  },
+  "parse_dashboard": {
+    "date_selector": ".toptitle.h1 p",
+    "date_regex": "Lagebericht (?P<date>\\d+\\.\\d+\\.\\d+)",
+    "date_regex_group": "date",
+    "cases_selector": "#box-fallzahl .value",
+    "recovered_selector": "#box-genesene .value",
+    "deaths_selector": "#box-todesfaelle .value"
   }
 }

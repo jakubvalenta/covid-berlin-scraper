@@ -9,7 +9,8 @@ import regex
 from bs4 import BeautifulSoup
 
 from covid_berlin_scraper.model import (
-    DistrictTable, DistrictTableStore, PressRelease, PressReleasesStore,
+    Dashboard, DashboardStore, DistrictTable, DistrictTableStore, PressRelease,
+    PressReleasesStore,
 )
 from covid_berlin_scraper.utils.http_utils import http_get
 from covid_berlin_scraper.utils.parse_utils import (
@@ -221,6 +222,41 @@ def parse_district_tables(
         yield stats
 
 
+def find_dashboard_value(soup: BeautifulSoup, selector: str) -> int:
+    return int(soup.select(selector)[0].contents[0].replace(' ', ''))
+
+
+def parse_dashboard(
+    dashboard: Dashboard,
+    cases_selector: str,
+    recovered_selector: str,
+    deaths_selector: str,
+) -> PressReleaseStats:
+    soup = BeautifulSoup(dashboard.content, 'lxml')
+    return PressReleaseStats(
+        timestamp=dashboard.timestamp,
+        cases=find_dashboard_value(soup, cases_selector),
+        recovered=find_dashboard_value(soup, recovered_selector),
+        deaths=find_dashboard_value(soup, deaths_selector),
+        hospitalized=None,
+        icu=None,
+    )
+
+
+def parse_dashboards(
+    db_path: Path, **parse_dashboard_kwargs
+) -> Iterator[PressReleaseStats]:
+    dashboard_store = DashboardStore(db_path)
+    for dashboard in dashboard_store:
+        try:
+            stats = parse_dashboard(dashboard, **parse_dashboard_kwargs)
+        except ParseError:
+            logger.error('Failed to parse %s', dashboard)
+            continue
+        logger.info(stats)
+        yield stats
+
+
 def write_csv(
     stats_list: Iterable[PressReleaseStats],
     path: Path,
@@ -329,7 +365,19 @@ def main(
             },
         )
     )
-    stats_list = stats_list_press_releases + stats_list_district_tables
+    stats_dashboard = list(
+        parse_dashboards(
+            db_path=cache_path / 'db.sqlite3',
+            cases_selector=config['parse_dashboard']['cases_selector'],
+            recovered_selector=config['parse_dashboard']['recovered_selector'],
+            deaths_selector=config['parse_dashboard']['deaths_selector'],
+        )
+    )
+    stats_list = (
+        stats_list_press_releases
+        + stats_list_district_tables
+        + stats_dashboard
+    )
     write_csv(
         stats_list,
         output_path,
