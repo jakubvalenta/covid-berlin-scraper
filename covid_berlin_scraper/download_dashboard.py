@@ -8,7 +8,6 @@ from bs4 import BeautifulSoup
 
 from covid_berlin_scraper.model import Dashboard, DashboardStore
 from covid_berlin_scraper.utils.http_utils import http_get
-from covid_berlin_scraper.utils.parse_utils import parse_datetime
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +26,9 @@ def download_dashboard(
     m = date_regex.search(date_line)
     date_str = m.group(date_regex_group)
     return Dashboard(
-        timestamp=parse_datetime(date_str, default_tz),
+        timestamp=datetime.datetime.strptime(date_str, '%d.%m.%Y').replace(
+            tzinfo=default_tz
+        ),
         content=content,
     )
 
