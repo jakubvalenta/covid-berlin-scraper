@@ -20,8 +20,8 @@ class TestParsePressReleases(TestCase):
             deaths_selector='#box-todesfaelle .value',
         )
         self.assertIs(press_release_stats.timestamp, timestamp)
-        self.assertEqual(press_release_stats.cases, 11265)
-        self.assertEqual(press_release_stats.recovered, 10312)
+        self.assertEqual(press_release_stats.cases, 12089)
+        self.assertEqual(press_release_stats.recovered, 11012)
         self.assertEqual(press_release_stats.deaths, 226)
         self.assertIsNone(press_release_stats.hospitalized)
         self.assertIsNone(press_release_stats.icu)

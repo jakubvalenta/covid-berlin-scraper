@@ -33,6 +33,6 @@ class TestDownloadDashboard(TestCase):
         )
         self.assertEqual(
             dashboard.timestamp,
-            datetime.datetime(year=2020, month=8, day=31, tzinfo=default_tz),
+            datetime.datetime(year=2020, month=9, day=10, tzinfo=default_tz),
         )
         self.assertEqual(dashboard.content, dashboard_content)
