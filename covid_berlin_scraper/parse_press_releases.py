@@ -249,7 +249,7 @@ def parse_dashboard(
     hospitalized_text: str,
     icu_text: str,
 ) -> PressReleaseStats:
-    soup = BeautifulSoup(dashboard.content, 'lxml')
+    soup = BeautifulSoup(dashboard.content_utf8, 'lxml')
     return PressReleaseStats(
         timestamp=dashboard.timestamp,
         cases=find_dashboard_value(soup, cases_selector),

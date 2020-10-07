@@ -119,6 +119,13 @@ class Dashboard(Base):  # type: ignore
             f'content_length={len(self.content)})'
         )
 
+    @property
+    def content_utf8(self) -> str:
+        try:
+            return self.content.encode('iso-8859-1').decode()
+        except (UnicodeDecodeError, UnicodeEncodeError):
+            return self.content
+
 
 class DashboardStore(list):
     _session: Session
