@@ -1,3 +1,5 @@
+# coding: utf-8
+
 import csv
 import datetime
 import logging
@@ -232,11 +234,20 @@ def find_dashboard_value(soup: BeautifulSoup, selector: str) -> int:
     return int(soup.select(selector)[0].contents[0].replace(' ', ''))
 
 
+def find_dashboard_table_value(soup: BeautifulSoup, text: str) -> int:
+    for element in soup.select('td'):
+        if element.string == text and element.next_sibling.name == 'td':
+            return int(element.next_sibling.text)
+    raise Exception(f'Failed to find table value for "{text}"')
+
+
 def parse_dashboard(
     dashboard: Dashboard,
     cases_selector: str,
     recovered_selector: str,
     deaths_selector: str,
+    hospitalized_text: str,
+    icu_text: str,
 ) -> PressReleaseStats:
     soup = BeautifulSoup(dashboard.content, 'lxml')
     return PressReleaseStats(
@@ -244,8 +255,8 @@ def parse_dashboard(
         cases=find_dashboard_value(soup, cases_selector),
         recovered=find_dashboard_value(soup, recovered_selector),
         deaths=find_dashboard_value(soup, deaths_selector),
-        hospitalized=None,
-        icu=None,
+        hospitalized=find_dashboard_table_value(soup, hospitalized_text),
+        icu=find_dashboard_table_value(soup, icu_text),
     )
 
 
@@ -377,6 +388,8 @@ def main(
             cases_selector=config['parse_dashboard']['cases_selector'],
             recovered_selector=config['parse_dashboard']['recovered_selector'],
             deaths_selector=config['parse_dashboard']['deaths_selector'],
+            hospitalized_text=config['parse_dashboard']['hospitalized_text'],
+            icu_text=config['parse_dashboard']['icu_text'],
         )
     )
     stats_list = (

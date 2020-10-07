@@ -98,6 +98,8 @@
     "date_regex_group": "date",
     "cases_selector": "#box-fallzahl .value",
     "recovered_selector": "#box-genesene .value",
-    "deaths_selector": "#box-todesfaelle .value"
+    "deaths_selector": "#box-todesfaelle .value",
+    "hospitalized_text": "Patient*innen in stationärer Behandlung",
+    "icu_text": "└─ ITS-Versorgung"
   }
 }

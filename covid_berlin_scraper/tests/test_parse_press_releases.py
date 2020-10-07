@@ -1,3 +1,5 @@
+# coding: utf-8
+
 import datetime
 from pathlib import Path
 from unittest import TestCase
@@ -18,10 +20,12 @@ class TestParsePressReleases(TestCase):
             cases_selector='#box-fallzahl .value',
             recovered_selector='#box-genesene .value',
             deaths_selector='#box-todesfaelle .value',
+            hospitalized_text='Patient*innen in stationärer Behandlung',
+            icu_text='└─ ITS-Versorgung',
         )
         self.assertIs(press_release_stats.timestamp, timestamp)
         self.assertEqual(press_release_stats.cases, 12089)
         self.assertEqual(press_release_stats.recovered, 11012)
         self.assertEqual(press_release_stats.deaths, 226)
-        self.assertIsNone(press_release_stats.hospitalized)
-        self.assertIsNone(press_release_stats.icu)
+        self.assertEqual(press_release_stats.hospitalized, 44)
+        self.assertEqual(press_release_stats.icu, 13)
