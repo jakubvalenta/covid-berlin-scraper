@@ -32,6 +32,8 @@ def parse_int_or_none(
 
 def parse_datetime(s: str, default_tz: datetime.tzinfo) -> datetime.datetime:
     dt = dateparser.parse(s)
+    if not dt:
+        raise Exception(f'Failed to parse datetime "{s}"')
     if not dt.tzinfo:
         return dt.replace(tzinfo=default_tz)
     return dt

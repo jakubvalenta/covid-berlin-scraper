@@ -15,7 +15,12 @@ def download_district_table(
     logger.info('Downloading %s', url)
     r = requests.get(url, headers={'User-Agent': user_agent}, timeout=timeout)
     r.raise_for_status()
-    timestamp = dateparser.parse(r.headers['Last-Modified'])
+    last_modified = r.headers['Last-Modified']
+    timestamp = dateparser.parse(last_modified)
+    if not timestamp:
+        raise Exception(
+            f'Failed to parse Last-Modified header "{last_modified}"'
+        )
     if not timestamp.tzinfo:
         raise Exception('Missing time zone')
     content = r.text
