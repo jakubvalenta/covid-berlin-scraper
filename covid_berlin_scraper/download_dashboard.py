@@ -42,13 +42,18 @@ def main(cache_path: Path, config: dict):
     default_tz = dateutil.tz.gettz(config['download_feed']['default_tz'])
     if not default_tz:
         raise Exception('Invalid time zone')
-    dashboard = download_dashboard(
-        url=config['download_dashboard']['url'],
-        date_selector=config['parse_dashboard']['date_selector'],
-        date_regex=regex.compile(config['parse_dashboard']['date_regex']),
-        date_regex_group=config['parse_dashboard']['date_regex_group'],
-        default_tz=default_tz,
-        timeout=int(config['http']['timeout']),
-        user_agent=config['http']['user_agent'],
-    )
-    save_dashboard(dashboard, db_path=cache_path / 'db.sqlite3')
+    if 'url' in config['download_dashboard']:
+        urls = [config['download_dashboard']['url']]
+    else:
+        urls = config['download_dashboard']['urls']
+    for url in urls:
+        dashboard = download_dashboard(
+            url=url,
+            date_selector=config['parse_dashboard']['date_selector'],
+            date_regex=regex.compile(config['parse_dashboard']['date_regex']),
+            date_regex_group=config['parse_dashboard']['date_regex_group'],
+            default_tz=default_tz,
+            timeout=int(config['http']['timeout']),
+            user_agent=config['http']['user_agent'],
+        )
+        save_dashboard(dashboard, db_path=cache_path / 'db.sqlite3')
