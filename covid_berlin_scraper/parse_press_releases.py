@@ -1,5 +1,3 @@
-# coding: utf-8
-
 import csv
 import datetime
 import logging
@@ -237,7 +235,7 @@ def find_dashboard_value(soup: BeautifulSoup, selector: str) -> int:
 def find_dashboard_table_value(soup: BeautifulSoup, text: str) -> int:
     for element in soup.select('td'):
         if element.string == text and element.next_sibling.name == 'td':
-            return int(element.next_sibling.text)
+            return int(element.next_sibling.text.replace(' ', ''))
     raise Exception(f'Failed to find table value for "{text}"')
 
 
