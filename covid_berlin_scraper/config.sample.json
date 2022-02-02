@@ -1,7 +1,7 @@
 {
   "http": {
     "timeout": 10,
-    "user_agent": "Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101 Firefox/68.0"
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0"
   },
   "download_district_table": {
     "url": "https://www.berlin.de/lageso/_assets/gesundheit/publikationen/corona/bezirkstabelle.csv"
