@@ -1,8 +1,9 @@
 import logging
 from pathlib import Path
+from typing import Iterator
 
 import regex
-from sqlalchemy import Column, DateTime, Integer, String, create_engine
+from sqlalchemy import Column, DateTime, Integer, String, create_engine, select
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.orm.session import Session
@@ -10,6 +11,13 @@ from sqlalchemy.orm.session import Session
 logger = logging.getLogger(__name__)
 
 Base = declarative_base()
+
+
+def to_utf8(s: str) -> str:
+    try:
+        return s.encode('iso-8859-1').decode()
+    except (UnicodeDecodeError, UnicodeEncodeError):
+        return s
 
 
 class PressRelease(Base):  # type: ignore
@@ -45,7 +53,7 @@ class PressReleasesStore:
     def __init__(self, path: Path):
         self._session = create_session(path)
 
-    def list(self):
+    def list(self) -> Iterator[PressRelease]:
         return self._session.query(PressRelease).order_by(
             PressRelease.timestamp
         )
@@ -86,7 +94,7 @@ class DistrictTableStore:
     def __init__(self, path: Path):
         self._session = create_session(path)
 
-    def list(self):
+    def list(self) -> Iterator[DistrictTable]:
         return self._session.query(DistrictTable).order_by(
             DistrictTable.timestamp
         )
@@ -119,13 +127,6 @@ class Dashboard(Base):  # type: ignore
             f'content_length={len(self.content)})'
         )
 
-    @property
-    def content_utf8(self) -> str:
-        try:
-            return self.content.encode('iso-8859-1').decode()
-        except (UnicodeDecodeError, UnicodeEncodeError):
-            return self.content
-
 
 class DashboardStore:
     _session: Session
@@ -133,8 +134,15 @@ class DashboardStore:
     def __init__(self, path: Path):
         self._session = create_session(path)
 
-    def list(self):
-        return self._session.query(Dashboard).order_by(Dashboard.timestamp)
+    def list(self) -> Iterator[Dashboard]:
+        result = self._session.execute(
+            select(
+                Dashboard.id, Dashboard.timestamp, Dashboard.content
+            ).order_by(Dashboard.timestamp),
+            execution_options={"stream_results": True},
+        )
+        for partition in result.partitions(100):
+            yield from partition
 
     def append(self, dashboard: Dashboard):
         existing_dashboard = (
