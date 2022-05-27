@@ -80,7 +80,7 @@ def download_press_releases(
     db_path: Path, **http_get_kwargs
 ) -> Iterator[PressReleaseContent]:
     press_releases = PressReleasesStore(db_path)
-    for press_release in press_releases:
+    for press_release in press_releases.list():
         html = http_get(press_release.url, **http_get_kwargs)
         yield PressReleaseContent(press_release=press_release, html=html)
 
@@ -216,7 +216,7 @@ def parse_district_tables(
     db_path: Path, **parse_district_table_kwargs
 ) -> Iterator[PressReleaseStats]:
     district_table_store = DistrictTableStore(db_path)
-    for district_table in district_table_store:
+    for district_table in district_table_store.list():
         try:
             stats = parse_district_table(
                 district_table, **parse_district_table_kwargs
@@ -262,7 +262,7 @@ def parse_dashboards(
     db_path: Path, **parse_dashboard_kwargs
 ) -> Iterator[PressReleaseStats]:
     dashboard_store = DashboardStore(db_path)
-    for dashboard in dashboard_store:
+    for dashboard in dashboard_store.list():
         try:
             stats = parse_dashboard(dashboard, **parse_dashboard_kwargs)
         except ParseError:

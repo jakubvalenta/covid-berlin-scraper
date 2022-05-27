@@ -39,16 +39,16 @@ def create_session(path: Path) -> Session:
     return scoped_session(session_factory)
 
 
-class PressReleasesStore(list):
+class PressReleasesStore:
     _session: Session
 
     def __init__(self, path: Path):
         self._session = create_session(path)
-        query = self._session.query(PressRelease).order_by(
+
+    def list(self):
+        return self._session.query(PressRelease).order_by(
             PressRelease.timestamp
         )
-        for press_release in query:
-            super().append(press_release)
 
     def append(self, press_release: PressRelease):
         existing_press_release = (
@@ -80,16 +80,16 @@ class DistrictTable(Base):  # type: ignore
         )
 
 
-class DistrictTableStore(list):
+class DistrictTableStore:
     _session: Session
 
     def __init__(self, path: Path):
         self._session = create_session(path)
-        query = self._session.query(DistrictTable).order_by(
+
+    def list(self):
+        return self._session.query(DistrictTable).order_by(
             DistrictTable.timestamp
         )
-        for district_table in query:
-            super().append(district_table)
 
     def append(self, district_table: DistrictTable):
         existing_district_table = (
@@ -127,14 +127,14 @@ class Dashboard(Base):  # type: ignore
             return self.content
 
 
-class DashboardStore(list):
+class DashboardStore:
     _session: Session
 
     def __init__(self, path: Path):
         self._session = create_session(path)
-        query = self._session.query(Dashboard).order_by(Dashboard.timestamp)
-        for dashboard in query:
-            super().append(dashboard)
+
+    def list(self):
+        return self._session.query(Dashboard).order_by(Dashboard.timestamp)
 
     def append(self, dashboard: Dashboard):
         existing_dashboard = (

@@ -1,6 +1,7 @@
 import datetime
 import logging
 from pathlib import Path
+from typing import Iterable
 
 import dateutil.tz
 import regex
@@ -33,9 +34,10 @@ def download_dashboard(
     )
 
 
-def save_dashboard(dashboard: Dashboard, db_path: Path):
+def save_dashboards(dashboards: Iterable[Dashboard], db_path: Path):
     dashboard_store = DashboardStore(db_path)
-    dashboard_store.append(dashboard)
+    for dashboard in dashboards:
+        dashboard_store.append(dashboard)
 
 
 def main(cache_path: Path, config: dict):
@@ -46,8 +48,8 @@ def main(cache_path: Path, config: dict):
         urls = [config['download_dashboard']['url']]
     else:
         urls = config['download_dashboard']['urls']
-    for url in urls:
-        dashboard = download_dashboard(
+    dashboards = (
+        download_dashboard(
             url=url,
             date_selector=config['parse_dashboard']['date_selector'],
             date_regex=regex.compile(config['parse_dashboard']['date_regex']),
@@ -56,4 +58,6 @@ def main(cache_path: Path, config: dict):
             timeout=int(config['http']['timeout']),
             user_agent=config['http']['user_agent'],
         )
-        save_dashboard(dashboard, db_path=cache_path / 'db.sqlite3')
+        for url in urls
+    )
+    save_dashboards(dashboards, db_path=cache_path / 'db.sqlite3')
