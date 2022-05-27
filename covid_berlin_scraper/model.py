@@ -136,13 +136,12 @@ class DashboardStore:
 
     def list(self) -> Iterator[Dashboard]:
         result = self._session.execute(
-            select(
-                Dashboard.id, Dashboard.timestamp, Dashboard.content
-            ).order_by(Dashboard.timestamp),
-            execution_options={"stream_results": True},
+            select(Dashboard.id, Dashboard.timestamp, Dashboard.content)
+            .order_by(Dashboard.timestamp)
+            .execution_options(stream_results=True, max_row_buffer=50),
         )
-        for partition in result.partitions(100):
-            yield from partition
+        for row in result.yield_per(50):
+            yield row
 
     def append(self, dashboard: Dashboard):
         existing_dashboard = (
