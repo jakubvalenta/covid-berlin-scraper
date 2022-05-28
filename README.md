@@ -1,13 +1,14 @@
 # Scraper for Covid-19 Data in Berlin
 
-This program downloads data on the number of coronavirus cases, recovered cases,
-deaths, hospitalized patients and ICU patients in Berlin, Germany from the
-website of the city of Berlin:
+Download Covid-19 data from the official sources of the city of Berlin:
 
 - [Pressemitteilungen der Senatsverwaltung für Gesundheit, Pflege und
   Gleichstellung](https://www.berlin.de/sen/gpg/service/presse/2020/)
 - [COVID-19 in Berlin, Verteilung in den
   Bezirken](https://www.berlin.de/lageso/gesundheit/infektionsepidemiologie-infektionsschutz/corona/tabelle-bezirke/)
+- [COVID-19 in
+  Berlin](https://www.berlin.de/corona/lagebericht/desktop/corona.html)
+  (dashboard).
 
 See [covid-berlin-data](https://www.github.com/jakubvalenta/covid-berlin-data)
 for the data itself (updated daily).
@@ -44,30 +45,37 @@ $ make setup
 
 ## Usage
 
-This program works in three steps:
+This program works in several steps:
 
-1. Download press releases from the current RSS feed and save their metadata in
-   a database in the passed cache directory:
+1. Download **press releases** from the current RSS feed and save their metadata
+   to a database in the passed cache directory:
 
     ``` shell
     $ ./covid-berlin-scraper --cache my_cache_dir --verbose download-feed
     ```
 
-2. Download the current district table (_Verteilung in den Bezirken_) and save
-   the data in a database in the passed cache directory:
+2. Download the current **district table** (_Verteilung in den Bezirken_) and
+   save the data to a database in the passed cache directory:
 
     ``` shell
     $ ./covid-berlin-scraper --cache my_cache_dir --verbose download-district-table
     ```
 
-2. Download press releases from the press release archive and save their
-   metadata in the same database:
+3. Download the current **dashboard** and save the data in a database to the
+   passed cache directory:
+
+    ``` shell
+    $ ./covid-berlin-scraper --cache my_cache_dir --verbose download-dashboard
+    ```
+
+4. (Optional) Download press releases from the **press release archive** and
+   save their metadata to the same database:
 
     ``` shell
     $ ./covid-berlin-scraper --cache my_cache_dir --verbose download-archives
     ```
 
-3. Download and parse the content of all press releases and district tables
+3. **Parse** the content of all press releases, district tables and dashboards
    stored in the database and generate a CSV output:
 
     ``` shell
@@ -89,7 +97,7 @@ $ ./covid-berlin-scraper --help
 ### Installation
 
 ``` shell
-$ make setup-dev
+$ make setup
 ```
 
 ### Testing and linting
