@@ -1,7 +1,11 @@
 #!/bin/bash
 
-project_dir=$(dirname "$(readlink -f "$0")")
+# https://github.com/python-poetry/poetry/issues/2179
 
-PIPENV_PIPFILE="$project_dir/Pipfile" \
-PYTHONPATH="$project_dir" \
-pipenv run python -m covid_berlin_scraper.cli "$@"
+set -euo pipefail
+
+project_dir=$(dirname "$(readlink -f "$0")")
+pushd "$project_dir" > /dev/null
+python_path="$(poetry env info -p)/bin/python"
+popd > /dev/null
+"$python_path" -m covid_berlin_scraper.cli "$@"

@@ -6,7 +6,7 @@ from covid_berlin_scraper import __title__
 
 setup(
     name='covid-berlin-scraper',
-    version='0.9.4',
+    version='0.9.5',
     description=__title__,
     long_description=(Path(__file__).parent / 'README.md').read_text(),
     url='https://www.github.com/jakubvalenta/covid-berlin-scraper',

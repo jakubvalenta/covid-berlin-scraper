@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "covid-berlin-scraper"
+version = "0.9.5"
+description = "Download Covid-19 data from the official sources of the city of Berlin."
+authors = ["Jakub Valenta <jakub@jakubvalenta.cz>"]
+license = "Apache Software License"
+include = ["covid_berlin_scraper/config.sample.json"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+beautifulsoup4 = "^4.11.1"
+dateparser = "^1.1.1"
+feedparser = "^6.0.10"
+lxml = "^4.8.0"
+python-dateutil = "^2.8.2"
+requests = "^2.27.1"
+SQLAlchemy = "^1.4.36"
+
+[tool.poetry.dev-dependencies]
+flake8 = "^4.0.1"
+isort = "^5.10.1"
+mypy = "^0.942"
+types-requests = "^2.27.16"
+types-python-dateutil = "^2.8.17"
+types-dateparser = "^1.1.2"
+
+[tool.poetry.scripts]
+covid-berlin-scraper = "covid_berlin_scraper.cli:main"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

@@ -18,14 +18,14 @@ for the data itself (updated daily).
 
 ``` shell
 $ brew install python
-$ pip install pipenv
+$ pip install poetry
 $ make setup
 ```
 
 ### Arch Linux
 
 ``` shell
-# pacman -S pipenv
+# pacman -S poetry
 $ make setup
 ```
 
@@ -34,7 +34,7 @@ $ make setup
 Install these dependencies manually:
 
 - Python >= 3.7
-- pipenv
+- poetry
 
 Then run:
 
