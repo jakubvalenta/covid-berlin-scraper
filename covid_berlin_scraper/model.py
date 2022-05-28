@@ -137,15 +137,19 @@ class UncompressedDashboardStore:
     def __init__(self, path: Path):
         self._session = create_session(path)
 
-    def list(self, buffer_size: int = 50) -> Iterator[UncompressedDashboard]:
-        result = self._session.execute(
-            select(UncompressedDashboard)
-            .order_by(UncompressedDashboard.timestamp)
-            .execution_options(
-                stream_results=True, max_row_buffer=buffer_size
-            ),
+    def list_ids(
+        self, buffer_size: int = 50
+    ) -> Iterator[UncompressedDashboard]:
+        return self._session.scalars(
+            select(UncompressedDashboard.id).order_by(
+                UncompressedDashboard.timestamp
+            )
         )
-        return result.yield_per(buffer_size).scalars()
+
+    def find_one(self, id: str) -> UncompressedDashboard:
+        return self._session.scalar(
+            select(UncompressedDashboard).where(UncompressedDashboard.id == id)
+        )
 
 
 class Dashboard(Base):  # type: ignore
