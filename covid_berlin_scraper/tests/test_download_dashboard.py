@@ -8,15 +8,15 @@ import regex
 
 from covid_berlin_scraper.download_dashboard import download_dashboard
 
-dashboard_content = (
-    Path(__file__).parent / 'test_data' / 'corona.html'
-).read_text()
+dashboard_f = (Path(__file__).parent / 'test_data' / 'corona.html.gz').open(
+    'rb'
+)
 
 
 class TestDownloadDashboard(TestCase):
     @patch(
-        'covid_berlin_scraper.download_dashboard.http_get',
-        return_value=dashboard_content,
+        'covid_berlin_scraper.download_dashboard.http_get_raw',
+        return_value=dashboard_f,
     )
     def test_download_dashboard(self, patched_http_get):
         default_tz = dateutil.tz.gettz('Europe/Berlin')
@@ -33,6 +33,7 @@ class TestDownloadDashboard(TestCase):
         )
         self.assertEqual(
             dashboard.timestamp,
-            datetime.datetime(year=2020, month=9, day=10, tzinfo=default_tz),
+            datetime.datetime(year=2022, month=5, day=28, tzinfo=default_tz),
         )
-        self.assertEqual(dashboard.content, dashboard_content)
+        dashboard_f.seek(0)
+        self.assertEqual(dashboard.content, dashboard_f.read())

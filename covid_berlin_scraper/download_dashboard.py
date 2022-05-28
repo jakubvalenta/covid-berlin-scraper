@@ -1,4 +1,5 @@
 import datetime
+import gzip
 import logging
 from pathlib import Path
 from typing import Iterable
@@ -8,7 +9,7 @@ import regex
 from bs4 import BeautifulSoup
 
 from covid_berlin_scraper.model import Dashboard, DashboardStore
-from covid_berlin_scraper.utils.http_utils import http_get
+from covid_berlin_scraper.utils.http_utils import http_get_raw
 
 logger = logging.getLogger(__name__)
 
@@ -21,8 +22,8 @@ def download_dashboard(
     default_tz: datetime.tzinfo,
     **http_kwargs,
 ) -> Dashboard:
-    content = http_get(url, **http_kwargs)
-    soup = BeautifulSoup(content, 'lxml')
+    content = http_get_raw(url, **http_kwargs).read()
+    soup = BeautifulSoup(gzip.decompress(content), 'lxml')
     date_line = soup.select(date_selector)[0].contents[0]
     m = date_regex.search(date_line)
     date_str = m.group(date_regex_group)

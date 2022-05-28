@@ -33,6 +33,12 @@ def download_archives(cache_path, config, args):
     main(cache_path, config)
 
 
+def compress_dashboards(cache_path, config, args):
+    from covid_berlin_scraper.compress_dashboards import main
+
+    main(cache_path, config)
+
+
 def parse_press_releases(cache_path, config, args):
     from covid_berlin_scraper.parse_press_releases import main
 
@@ -55,23 +61,34 @@ def main():
         help='Configuration JSON file path',
         default=str(Path(__file__).parent / 'config.sample.json'),
     )
+
     subparsers = parser.add_subparsers()
+
     download_feed_parser = subparsers.add_parser(
         'download-feed', help='Download feed'
     )
     download_feed_parser.set_defaults(func=download_feed)
+
     download_district_table_parser = subparsers.add_parser(
         'download-district-table', help='Download district table'
     )
     download_district_table_parser.set_defaults(func=download_district_table)
+
     download_dashboard_parser = subparsers.add_parser(
         'download-dashboard', help='Download dashboard'
     )
     download_dashboard_parser.set_defaults(func=download_dashboard)
+
     download_archives_parser = subparsers.add_parser(
         'download-archives', help='Download archives'
     )
     download_archives_parser.set_defaults(func=download_archives)
+
+    compress_dashboards_parser = subparsers.add_parser(
+        'compress-dashboards', help='Compress dashboards'
+    )
+    compress_dashboards_parser.set_defaults(func=compress_dashboards)
+
     parse_press_releases_parser = subparsers.add_parser(
         'parse-press-releases', help='Parse press releases'
     )
@@ -89,14 +106,17 @@ def main():
         ),
     )
     parse_press_releases_parser.set_defaults(func=parse_press_releases)
+
     args = parser.parse_args()
     if args.verbose:
         logging.basicConfig(
             stream=sys.stderr, level=logging.INFO, format='%(message)s'
         )
+
     cache_path = Path(args.cache)
     with open(args.config, 'r') as f:
         config = json.load(f)
+
     args.func(cache_path, config, args)
 
 

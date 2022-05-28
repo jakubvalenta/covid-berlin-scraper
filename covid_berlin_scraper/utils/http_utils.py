@@ -1,7 +1,7 @@
 import logging
 from hashlib import sha256
 from pathlib import Path
-from typing import Optional
+from typing import IO, Optional
 
 import regex
 import requests
@@ -20,7 +20,7 @@ def http_get(
     timeout: int,
     user_agent: str,
     cache_dir: Optional[Path] = None,
-):
+) -> str:
     if cache_dir:
         cache_file_path = cache_dir / safe_filename(url)
         if cache_file_path.is_file():
@@ -34,3 +34,12 @@ def http_get(
         cache_file_path.parent.mkdir(parents=True, exist_ok=True)
         cache_file_path.write_text(text)
     return text
+
+
+def http_get_raw(url: str, timeout: int, user_agent: str) -> IO:
+    logger.info('Downloading %s', url)
+    r = requests.get(
+        url, headers={'User-Agent': user_agent}, timeout=timeout, stream=True
+    )
+    r.raise_for_status()
+    return r.raw

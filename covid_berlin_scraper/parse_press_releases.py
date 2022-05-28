@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 
 from covid_berlin_scraper.model import (
     Dashboard, DashboardStore, DistrictTable, DistrictTableStore, PressRelease,
-    PressReleasesStore, to_utf8,
+    PressReleasesStore,
 )
 from covid_berlin_scraper.utils.http_utils import http_get
 from covid_berlin_scraper.utils.parse_utils import (
@@ -247,7 +247,7 @@ def parse_dashboard(
     hospitalized_text: str,
     icu_text: str,
 ) -> PressReleaseStats:
-    soup = BeautifulSoup(to_utf8(dashboard.content), 'lxml')
+    soup = BeautifulSoup(dashboard.decompressed_content, 'lxml')
     return PressReleaseStats(
         timestamp=dashboard.timestamp,
         cases=find_dashboard_value(soup, cases_selector),
