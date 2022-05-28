@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "covid-berlin-scraper"
-version = "0.10.1"
+version = "0.10.2"
 description = "Download Covid-19 data from the official sources of the city of Berlin."
 authors = ["Jakub Valenta <jakub@jakubvalenta.cz>"]
 license = "Apache Software License"
