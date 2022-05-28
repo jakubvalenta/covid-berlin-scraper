@@ -138,15 +138,14 @@ class UncompressedDashboardStore:
         self._session = create_session(path)
 
     def list(self, buffer_size: int = 50) -> Iterator[UncompressedDashboard]:
-        result = self._session.scalars(
+        result = self._session.execute(
             select(UncompressedDashboard)
             .order_by(UncompressedDashboard.timestamp)
             .execution_options(
                 stream_results=True, max_row_buffer=buffer_size
             ),
         )
-        for partition in result.partitions(buffer_size):
-            yield from partition
+        return result.yield_per(buffer_size).scalars()
 
 
 class Dashboard(Base):  # type: ignore
@@ -185,15 +184,14 @@ class DashboardStore:
         self._session = create_session(path)
 
     def list(self, buffer_size: int = 50) -> Iterator[Dashboard]:
-        result = self._session.scalars(
+        result = self._session.execute(
             select(Dashboard)
             .order_by(Dashboard.timestamp)
             .execution_options(
                 stream_results=True, max_row_buffer=buffer_size
             ),
         )
-        for partition in result.partitions(buffer_size):
-            yield from partition
+        return result.yield_per(buffer_size).scalars()
 
     def append(self, dashboard: Dashboard):
         existing_dashboard = self._session.scalars(
