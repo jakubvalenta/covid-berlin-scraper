@@ -228,33 +228,36 @@ def parse_district_tables(
         yield stats
 
 
-def find_dashboard_value(soup: BeautifulSoup, selector: str) -> int:
-    return int(soup.select(selector)[0].contents[0].replace(' ', ''))
-
-
-def find_dashboard_table_value(soup: BeautifulSoup, text: str) -> int:
-    for element in soup.select('td'):
-        if element.string == text and element.next_sibling.name == 'td':
-            return int(element.next_sibling.text.replace(' ', ''))
-    raise Exception(f'Failed to find table value for "{text}"')
+def find_dashboard_value(
+    soup: BeautifulSoup, selectors: list[str]
+) -> Optional[int]:
+    for selector in selectors:
+        tags = soup.select(selector)
+        if len(tags):
+            tag = tags[0]
+            return int(tag.contents[0].replace(' ', ''))
+    return None
 
 
 def parse_dashboard(
     dashboard: Dashboard,
-    cases_selector: str,
-    recovered_selector: str,
-    deaths_selector: str,
-    hospitalized_text: str,
-    icu_text: str,
+    cases_selectors: list[str],
+    recovered_selectors: list[str],
+    deaths_selectors: list[str],
+    hospitalized_selectors: list[str],
+    icu_selectors: list[str],
 ) -> PressReleaseStats:
     soup = BeautifulSoup(dashboard.decompressed_content, 'lxml')
+    cases = find_dashboard_value(soup, cases_selectors)
+    if cases is None:
+        raise Exception('Failed to parse the number of cases')
     return PressReleaseStats(
         timestamp=dashboard.timestamp,
-        cases=find_dashboard_value(soup, cases_selector),
-        recovered=find_dashboard_value(soup, recovered_selector),
-        deaths=find_dashboard_value(soup, deaths_selector),
-        hospitalized=find_dashboard_table_value(soup, hospitalized_text),
-        icu=find_dashboard_table_value(soup, icu_text),
+        cases=cases,
+        recovered=find_dashboard_value(soup, recovered_selectors),
+        deaths=find_dashboard_value(soup, deaths_selectors),
+        hospitalized=find_dashboard_value(soup, hospitalized_selectors),
+        icu=find_dashboard_value(soup, icu_selectors),
     )
 
 
@@ -383,11 +386,15 @@ def main(
     stats_dashboard = list(
         parse_dashboards(
             db_path=cache_path / 'db.sqlite3',
-            cases_selector=config['parse_dashboard']['cases_selector'],
-            recovered_selector=config['parse_dashboard']['recovered_selector'],
-            deaths_selector=config['parse_dashboard']['deaths_selector'],
-            hospitalized_text=config['parse_dashboard']['hospitalized_text'],
-            icu_text=config['parse_dashboard']['icu_text'],
+            cases_selectors=config['parse_dashboard']['cases_selectors'],
+            recovered_selectors=config['parse_dashboard'][
+                'recovered_selectors'
+            ],
+            deaths_selectors=config['parse_dashboard']['deaths_selectors'],
+            hospitalized_selectors=config['parse_dashboard'][
+                'hospitalized_selectors'
+            ],
+            icu_selectors=config['parse_dashboard']['icu_selectors'],
         )
     )
     stats_list = (

@@ -96,10 +96,20 @@
     "date_selector": ".toptitle.h1 p",
     "date_regex": "Lagebericht (?P<date>\\d+\\.\\d+\\.\\d+)",
     "date_regex_group": "date",
-    "cases_selector": "#box-fallzahl .value",
-    "recovered_selector": "#box-genesene .value",
-    "deaths_selector": "#box-todesfaelle .value",
-    "hospitalized_text": "Patient*innen in stationärer Behandlung",
-    "icu_text": "└─ ITS-Versorgung"
+    "cases_selectors": [
+      "#box-fallzahl .value",
+      "#fallzahlen-berlin tbody tr:nth-of-type(1) td:nth-of-type(5) span"
+    ],
+    "recovered_selectors": ["#box-genesene .value"],
+    "deaths_selectors": [
+      "#box-todesfaelle .value",
+      "#fallzahlen-berlin tbody tr:nth-of-type(3) td:nth-of-type(5) span"
+    ],
+    "hospitalized_selectors": [
+      "#selbstauskunft-der-krankenhäuser-in-ivena tbody tr:nth-of-type(1) td:nth-of-type(2) span"
+    ],
+    "icu_selectors": [
+      "#selbstauskunft-der-krankenhäuser-in-ivena tbody tr:nth-of-type(3) td:nth-of-type(2) span"
+    ]
   }
 }
