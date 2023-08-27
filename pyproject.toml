@@ -7,25 +7,27 @@ license = "Apache Software License"
 include = ["covid_berlin_scraper/config.sample.json"]
 
 [tool.poetry.dependencies]
-python = "^3.7"
-beautifulsoup4 = "^4.11.1"
-dateparser = "^1.1.1"
+python = "^3.8.1"
+beautifulsoup4 = "^4.12.2"
+dateparser = "^1.1.8"
 feedparser = "^6.0.10"
-lxml = "^4.8.0"
+greenlet = "^2.0.0"
+lxml = "^4.9.3"
 python-dateutil = "^2.8.2"
-requests = "^2.27.1"
-SQLAlchemy = "^1.4.36"
-
-[tool.poetry.dev-dependencies]
-flake8 = "^4.0.1"
-isort = "^5.10.1"
-mypy = "^0.942"
-types-requests = "^2.27.16"
-types-python-dateutil = "^2.8.17"
-types-dateparser = "^1.1.2"
+requests = "^2.31.0"
+SQLAlchemy = "~1.4.0"
 
 [tool.poetry.scripts]
 covid-berlin-scraper = "covid_berlin_scraper.cli:main"
+
+[tool.poetry.group.dev.dependencies]
+ddt = "^1.6.0"
+flake8 = "^6.1.0"
+isort = "^5.12.0"
+mypy = "^1.5.1"
+types-requests = "^2.31.0.2"
+types-python-dateutil = "^2.8.19.14"
+types-dateparser = "^1.1.4.10"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
