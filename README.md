@@ -34,7 +34,7 @@ $ make setup
 
 Install these dependencies manually:
 
-- Python >= 3.7
+- Python >= 3.8.1
 - poetry
 
 Then run:
