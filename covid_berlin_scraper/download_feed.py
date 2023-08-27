@@ -31,7 +31,7 @@ def download_feed(
 
 
 def filter_press_releases(
-    press_releases: Iterable[PressRelease], title_regex: regex.Regex
+    press_releases: Iterable[PressRelease], title_regex: regex.Pattern
 ) -> Iterator[PressRelease]:
     for press_release in press_releases:
         if press_release.matches_title_regex(title_regex):

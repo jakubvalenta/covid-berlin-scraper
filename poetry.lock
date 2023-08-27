@@ -782,6 +782,17 @@ files = [
 ]
 
 [[package]]
+name = "types-regex"
+version = "2023.8.8.0"
+description = "Typing stubs for regex"
+optional = false
+python-versions = "*"
+files = [
+    {file = "types-regex-2023.8.8.0.tar.gz", hash = "sha256:ec87fbb69802b7224d8067bf65048fbfa7bc061efde65cfe471471c0c4d561e0"},
+    {file = "types_regex-2023.8.8.0-py3-none-any.whl", hash = "sha256:52cc3e7748292fc0157388166e23b6d7b661459ae9dda8cec3c6a85ead3b1f98"},
+]
+
+[[package]]
 name = "types-requests"
 version = "2.31.0.2"
 description = "Typing stubs for requests"
@@ -866,4 +877,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8.1"
-content-hash = "1c00bbd0ed0c84802ccf982454b46d4bb1884a0587a8ccc6286a1bbfd8a27011"
+content-hash = "8ac92fb2443a79fb1cdc9ec73410977592c0b128e75038cb2ce4b2751e7c586a"

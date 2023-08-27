@@ -1,30 +1,36 @@
 import gzip
 import logging
+from datetime import datetime
 from pathlib import Path
 from typing import Iterator
 
 import regex
 from sqlalchemy import (
-    Column, DateTime, Integer, LargeBinary, String, create_engine, select,
+    DateTime, Integer, LargeBinary, String, create_engine, select,
 )
-from sqlalchemy.orm import registry, scoped_session, sessionmaker
-from sqlalchemy.orm.session import Session
+from sqlalchemy.orm import (
+    DeclarativeBase, Mapped, Session, mapped_column, scoped_session,
+    sessionmaker,
+)
 
 logger = logging.getLogger(__name__)
 
-mapper_registry = registry()
-Base = mapper_registry.generate_base()
+
+class Base(DeclarativeBase):
+    pass
 
 
 class PressRelease(Base):  # type: ignore
     __tablename__ = 'press_releases'
 
-    id = Column(Integer, primary_key=True)
-    timestamp = Column(DateTime, nullable=False, unique=True)
-    title = Column(String, nullable=False)
-    url = Column(String, nullable=False, unique=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    timestamp: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, unique=True
+    )
+    title: Mapped[str] = mapped_column(String, nullable=False)
+    url: Mapped[str] = mapped_column(String, nullable=False, unique=True)
 
-    def matches_title_regex(self, title_regex: regex.Regex) -> bool:
+    def matches_title_regex(self, title_regex: regex.Pattern) -> bool:
         return bool(title_regex.search(self.title))
 
     def __repr__(self) -> str:
@@ -35,16 +41,16 @@ class PressRelease(Base):  # type: ignore
         )
 
 
-def create_session(path: Path) -> Session:
+def create_session(path: Path) -> scoped_session[Session]:
     path.parent.mkdir(parents=True, exist_ok=True)
     engine = create_engine(f'sqlite:///{path}', future=True)
-    mapper_registry.metadata.create_all(engine)
+    Base.metadata.create_all(engine)
     session_factory = sessionmaker(bind=engine)
     return scoped_session(session_factory)
 
 
 class PressReleasesStore:
-    _session: Session
+    _session: scoped_session[Session]
 
     def __init__(self, path: Path):
         self._session = create_session(path)
@@ -73,9 +79,11 @@ class PressReleasesStore:
 class DistrictTable(Base):  # type: ignore
     __tablename__ = 'district_table'
 
-    id = Column(Integer, primary_key=True)
-    timestamp = Column(DateTime, nullable=False, unique=True)
-    content = Column(String, nullable=False)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    timestamp: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, unique=True
+    )
+    content: Mapped[str] = mapped_column(String, nullable=False)
 
     def __repr__(self) -> str:
         return (
@@ -85,7 +93,7 @@ class DistrictTable(Base):  # type: ignore
 
 
 class DistrictTableStore:
-    _session: Session
+    _session: scoped_session[Session]
 
     def __init__(self, path: Path):
         self._session = create_session(path)
@@ -113,9 +121,11 @@ class DistrictTableStore:
 class UncompressedDashboard(Base):  # type: ignore
     __tablename__ = 'dashboard'
 
-    id = Column(Integer, primary_key=True)
-    timestamp = Column(DateTime, nullable=False, unique=True)
-    content = Column(String, nullable=False)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    timestamp: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, unique=True
+    )
+    content: Mapped[str] = mapped_column(String, nullable=False)
 
     @property
     def content_utf8(self) -> str:
@@ -132,21 +142,19 @@ class UncompressedDashboard(Base):  # type: ignore
 
 
 class UncompressedDashboardStore:
-    _session: Session
+    _session: scoped_session[Session]
 
     def __init__(self, path: Path):
         self._session = create_session(path)
 
-    def list_ids(
-        self, buffer_size: int = 50
-    ) -> Iterator[UncompressedDashboard]:
+    def list_ids(self, buffer_size: int = 50) -> Iterator[int]:
         return self._session.scalars(
             select(UncompressedDashboard.id).order_by(
                 UncompressedDashboard.timestamp
             )
         )
 
-    def find_one(self, id: str) -> UncompressedDashboard:
+    def find_one(self, id: int) -> UncompressedDashboard | None:
         return self._session.scalar(
             select(UncompressedDashboard).where(UncompressedDashboard.id == id)
         )
@@ -155,9 +163,11 @@ class UncompressedDashboardStore:
 class Dashboard(Base):  # type: ignore
     __tablename__ = 'compressed_dashboard'
 
-    id = Column(Integer, primary_key=True)
-    timestamp = Column(DateTime, nullable=False, unique=True)
-    content = Column(LargeBinary, nullable=False)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    timestamp: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, unique=True
+    )
+    content: Mapped[bytes] = mapped_column(LargeBinary, nullable=False)
 
     @property
     def decompressed_content(self) -> bytes:
@@ -182,7 +192,7 @@ class Dashboard(Base):  # type: ignore
 
 
 class DashboardStore:
-    _session: Session
+    _session: scoped_session[Session]
 
     def __init__(self, path: Path):
         self._session = create_session(path)

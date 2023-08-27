@@ -23,7 +23,7 @@ def parse_int(
 
 
 def parse_int_or_none(
-    s: str, regex_none: regex.Regex, *args, **kwargs
+    s: str, regex_none: regex.Pattern, *args, **kwargs
 ) -> Optional[int]:
     if regex_none.search(s):
         return None

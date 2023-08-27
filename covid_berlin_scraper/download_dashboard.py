@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 def download_dashboard(
     url: str,
     date_selector: str,
-    date_regex: regex.Regex,
+    date_regex: regex.Pattern,
     date_regex_group: str,
     default_tz: datetime.tzinfo,
     **http_kwargs,
@@ -26,6 +26,8 @@ def download_dashboard(
     soup = BeautifulSoup(gzip.decompress(content), 'lxml')
     date_line = soup.select(date_selector)[0].contents[0]
     m = date_regex.search(date_line)
+    if not m:
+        raise Exception('Failed to parse date')
     date_str = m.group(date_regex_group)
     return Dashboard(
         timestamp=datetime.datetime.strptime(date_str, '%d.%m.%Y').replace(

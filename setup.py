@@ -34,7 +34,7 @@ setup(
         'python-dateutil',
         'regex',
         'requests',
-        'sqlalchemy~=1.4',
+        'sqlalchemy~=2.0.0',
     ],
     entry_points={
         'console_scripts': [

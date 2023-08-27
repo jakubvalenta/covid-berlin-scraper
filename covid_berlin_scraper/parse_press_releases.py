@@ -87,23 +87,23 @@ def download_press_releases(
 
 def parse_press_release(
     content: PressReleaseContent,
-    cases_regex: regex.Regex,
+    cases_regex: regex.Pattern,
     cases_regex_group: str,
     numbers_map: Dict[str, int],
-    deaths_regex: regex.Regex,
+    deaths_regex: regex.Pattern,
     deaths_regex_group: str,
-    hospitalized_regex: regex.Regex,
+    hospitalized_regex: regex.Pattern,
     hospitalized_regex_group: str,
     hospitalized_map: Dict[str, Optional[int]],
-    icu_regex: regex.Regex,
+    icu_regex: regex.Pattern,
     icu_regex_group: str,
     row_index: int,
-    first_cell_regex: regex.Regex,
+    first_cell_regex: regex.Pattern,
     cases_column_index: int,
     recovered_column_index: int,
     recovered_map: Dict[str, int],
     thousands_separator: str,
-    regex_none: regex.Regex,
+    regex_none: regex.Pattern,
 ) -> PressReleaseStats:
     soup = BeautifulSoup(content.html, 'lxml')
     table = soup.find('table')
@@ -142,20 +142,34 @@ def parse_press_release(
             raise ParseError('Failed to parse case number')
         recovered = recovered_map.get(content.press_release.url)
     deaths_m = deaths_regex.search(content.html)
-    deaths = deaths_m and parse_int(
-        deaths_m.group(deaths_regex_group), numbers_map, thousands_separator
+    deaths = (
+        parse_int(
+            deaths_m.group(deaths_regex_group),
+            numbers_map,
+            thousands_separator,
+        )
+        if deaths_m
+        else None
     )
     hospitalized_m = hospitalized_regex.search(content.html)
-    hospitalized = hospitalized_m and parse_int(
-        hospitalized_m.group(hospitalized_regex_group),
-        numbers_map,
-        thousands_separator,
+    hospitalized = (
+        parse_int(
+            hospitalized_m.group(hospitalized_regex_group),
+            numbers_map,
+            thousands_separator,
+        )
+        if hospitalized_m
+        else None
     )
     if hospitalized is None:
         hospitalized = hospitalized_map.get(content.press_release.url)
     icu_m = icu_regex.search(content.html)
-    icu = icu_m and parse_int(
-        icu_m.group(icu_regex_group), numbers_map, thousands_separator
+    icu = (
+        parse_int(
+            icu_m.group(icu_regex_group), numbers_map, thousands_separator
+        )
+        if icu_m
+        else None
     )
     return PressReleaseStats(
         timestamp=content.press_release.timestamp,

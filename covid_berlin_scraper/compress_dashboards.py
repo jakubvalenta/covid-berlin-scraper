@@ -16,6 +16,8 @@ def main(cache_path: Path, config: dict):
         uncompressed_dashboard = uncompressed_dashboard_store.find_one(
             uncompressed_dashboard_id
         )
+        if not uncompressed_dashboard:
+            raise Exception('Uncompressed dashboard was not found')
         dashboard = Dashboard.from_uncompressed_dashboard(
             uncompressed_dashboard
         )
