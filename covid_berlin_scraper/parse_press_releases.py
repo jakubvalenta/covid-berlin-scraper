@@ -213,7 +213,9 @@ def parse_district_table(
     for row in reader:
         if row[column_district] == row_sum:
             cases = int(row[column_cases])
-            recovered = int(row[column_recovered])
+            recovered = (
+                int(row[column_recovered]) if column_recovered in row else None
+            )
             deaths = deaths_map.get(district_table.timestamp.date())
             return PressReleaseStats(
                 timestamp=district_table.timestamp,
