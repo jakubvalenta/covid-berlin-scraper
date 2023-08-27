@@ -6,7 +6,7 @@ from covid_berlin_scraper import __title__
 
 setup(
     name='covid-berlin-scraper',
-    version='0.10.2',
+    version='0.11.0',
     description=__title__,
     long_description=(Path(__file__).parent / 'README.md').read_text(),
     url='https://www.github.com/jakubvalenta/covid-berlin-scraper',
@@ -19,21 +19,22 @@ setup(
         'Topic :: Utilities',
         'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
     ],
     packages=find_packages(),
     install_requires=[
         'beautifulsoup4',
         'dateparser',
         'feedparser',
+        'greenlet~=2.0.0',
         'lxml',
         'python-dateutil',
         'regex',
         'requests',
-        'sqlalchemy~=1.4',
+        'sqlalchemy~=1.4.0',
     ],
     entry_points={
         'console_scripts': [
